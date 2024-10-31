@@ -122,7 +122,7 @@ async function readConfigFromServer(studyLabel: string) {
  */
 async function fetchConfig(studyLabel: string, alreadyTriedLocal?: boolean) {
   logDebug('Received request to join ' + studyLabel);
-  let downloadURL = `https://raw.githubusercontent.com/e-mission/nrel-openpath-deploy-configs/main/configs/${studyLabel}.nrel-op.json`;
+  let downloadURL = `https://raw.githubusercontent.com/tgm-openpath/e-mission-deploy-configs/main/configs/${studyLabel}.nrel-op.json`;
   if (!__DEV__ || alreadyTriedLocal) {
     logDebug('Fetching config from github');
     const r = await fetch(downloadURL, { cache: 'reload' });
