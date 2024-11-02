@@ -89,6 +89,8 @@ function registerPromise() {
  * currently called on reconsent and on intro done
  */
 function registerPush() {
+  logWarn('registerPush: Deactivated with early return')
+  return
   registerPromise()
     .then((t) => {
       logDebug('Token = ' + JSON.stringify(t));
