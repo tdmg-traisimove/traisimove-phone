@@ -362,7 +362,7 @@
   },
   "login": {
     "make-sure-save-your-opcode": "Make sure to save your OPcode!",
-    "cannot-retrieve": "NREL cannot retrieve it for you later!",
+    "cannot-retrieve": "TRAISI Move cannot retrieve it for you later!",
     "save": "Save",
     "continue": "Continue",
     "enter-existing-token": "Enter the existing token that you have",
@@ -388,7 +388,7 @@
   },
   "join": {
     "welcome-to-app": "Welcome to <b>{{appName}}!</b>",
-    "app-name": "NREL OpenPATH",
+    "app-name": "TRAISI Move",
     "to-proceed-further": "To proceed further, please scan or paste an access code that has been provided by your program administrator through a website, email, text message, or printout.",
     "code-hint": "The code begins with ‘nrelop’ and may be in barcode or text format.",
     "scan-code": "Scan code",
