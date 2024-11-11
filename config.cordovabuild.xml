@@ -60,6 +60,7 @@
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
             <uses-library android:name="org.apache.http.legacy" android:required="false" />
         </config-file>
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="resources/splash.png" />
     </platform>
     <icon src="resources/icon.png" />
 </widget>
