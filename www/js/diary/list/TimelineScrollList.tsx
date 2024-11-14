@@ -84,7 +84,7 @@ const TimelineScrollList = ({ listEntries }: Props) => {
   const noMoreTravelBanner = (
     <Banner visible={true} style={{ marginBottom: 15 }} icon={({ size }) => <Icon source="alert-circle" size={size} />}>
       <View style={{ width: '100%' }}>
-        <Text variant="titleMedium">No more travel show</Text>
+        <Text variant="titleMedium">No more travel to show</Text>
         <Text variant="bodySmall">{noNewTravelToShowMessage}</Text>
       </View>
     </Banner>
