@@ -26,6 +26,8 @@ const separator = () => <View style={{ height: 8 }} />;
 const bigSpinner = <ActivityIndicator size="large" style={{ margin: 15 }} />;
 const smallSpinner = <ActivityIndicator size="small" style={{ margin: 5 }} />;
 
+const noNewTravelToShowMessage = 'New travels may take up to 3 hours to appear.'
+
 type Props = {
   listEntries: any[] | null;
 };
@@ -64,6 +66,7 @@ const TimelineScrollList = ({ listEntries }: Props) => {
       <View style={{ width: '100%' }}>
         <Text variant="titleMedium">{t('diary.no-travel')}</Text>
         <Text variant="bodySmall">{t('diary.no-travel-hint')}</Text>
+        <Text variant="bodySmall">{noNewTravelToShowMessage}</Text>
         {queriedDateRange?.[0] && pipelineEndDate && queriedDateRange?.[0] > pipelineEndDate && (
           <Button
             style={{ marginEnd: 'auto' }}
@@ -74,6 +77,15 @@ const TimelineScrollList = ({ listEntries }: Props) => {
             {t('diary.jump-to-last-processed-week')}
           </Button>
         )}
+      </View>
+    </Banner>
+  );
+
+  const noMoreTravelBanner = (
+    <Banner visible={true} style={{ marginBottom: 15 }} icon={({ size }) => <Icon source="alert-circle" size={size} />}>
+      <View style={{ width: '100%' }}>
+        <Text variant="titleMedium">No more travel show</Text>
+        <Text variant="bodySmall">{noNewTravelToShowMessage}</Text>
       </View>
     </Banner>
   );
@@ -102,7 +114,7 @@ const TimelineScrollList = ({ listEntries }: Props) => {
             This might be a nicer experience than the current header and footer buttons. */
         // onScroll={e => console.debug(e.nativeEvent.contentOffset.y)}
         ListHeaderComponent={
-          timelineIsLoading == 'append' ? smallSpinner : !reachedPipelineEnd ? header : null
+          timelineIsLoading == 'append' ? smallSpinner : !reachedPipelineEnd ? header : noMoreTravelBanner
         }
         ListFooterComponent={timelineIsLoading == 'prepend' ? smallSpinner : footer}
         ItemSeparatorComponent={separator}
