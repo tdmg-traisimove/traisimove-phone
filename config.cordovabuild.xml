@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="52" id="edu.berkeley.eecs.emission" ios-CFBundleVersion="50" version="3.2.9" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>emission</name>
+<widget android-versionCode="1" id="ca.utoronto.tdmg.traisimove" ios-CFBundleVersion="1" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>traisimove</name>
     <description>
         A commute pattern tracker and carbon footprint estimator.
     </description>
-    <author email="shankari@eecs.berkeley.edu" href="https://e-mission.eecs.berkeley.edu">
-        E-Mission Team
+    <author email="khandker.nurulhabib@utoronto.ca" href="https://tmg.utoronto.ca/">
+        TRAISI Move
   </author>
     <content src="index.html" />
     <access origin="*" />

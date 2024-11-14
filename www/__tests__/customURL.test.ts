@@ -9,7 +9,7 @@ describe('onLaunchCustomURL', () => {
   });
 
   it('tests valid url 1 - should call handler callback with valid URL and the handler should be called with correct parameters', () => {
-    const validURL = 'emission://login_token?token=nrelop_dev-emulator-program';
+    const validURL = 'traisimove://login_token?token=nrelop_dev-emulator-program';
     const expectedURL = 'login_token?token=nrelop_dev-emulator-program';
     const expectedComponents = { route: 'login_token', token: 'nrelop_dev-emulator-program' };
     onLaunchCustomURL(validURL, mockHandler);
@@ -17,7 +17,7 @@ describe('onLaunchCustomURL', () => {
   });
 
   it('tests valid url 2 - should call handler callback with valid URL and the handler should be called with correct parameters', () => {
-    const validURL = 'emission://test?param1=first&param2=second';
+    const validURL = 'traisimove://test?param1=first&param2=second';
     const expectedURL = 'test?param1=first&param2=second';
     const expectedComponents = { route: 'test', param1: 'first', param2: 'second' };
     onLaunchCustomURL(validURL, mockHandler);

@@ -23,7 +23,7 @@ import { forceTransition } from '../control/ControlCollectionHelper';
  */
 
 const BluetoothScanPage = ({ ...props }: any) => {
-  const STATIC_ID = 'edu.berkeley.eecs.emission';
+  const STATIC_ID = 'ca.utoronto.tdmg.traisimove';
 
   const { t } = useTranslation();
   const [bluetoothClassicList, setBluetoothClassicList] = useState<BluetoothClassicDevice[]>([]);

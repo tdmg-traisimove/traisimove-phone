@@ -1,7 +1,7 @@
 {
-  "name": "edu.berkeley.eecs.emission",
-  "version": "3.2.9",
-  "displayName": "emission",
+  "name": "ca.utoronto.tdmg.traisimove",
+  "version": "1.0.0",
+  "displayName": "Traisi Move",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
@@ -65,7 +65,7 @@
       "cordova-plugin-file": {},
       "cordova-plugin-device": {},
       "cordova-plugin-customurlscheme": {
-        "URL_SCHEME": "emission",
+        "URL_SCHEME": "traisimove",
         "ANDROID_SCHEME": " ",
         "ANDROID_HOST": " ",
         "ANDROID_PATHPREFIX": "/"

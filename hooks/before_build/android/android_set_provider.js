@@ -6,7 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var et = require('elementtree');
 
-const PROVIDER = "edu.berkeley.eecs.emission.provider";
+const PROVIDER = "ca.utoronto.tdmg.traisimove.provider";
 const ACCOUNT_TYPE = "eecs.berkeley.edu";
 const LOG_NAME = "Changing Providers: ";
 

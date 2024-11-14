@@ -1,5 +1,5 @@
 //  * @example getTokenFromUrl('https://open-access-openpath.nrel.gov/join/') => nrelop_open-access_default_randomLongStringWith32Characters
-//  * @example getTokenFromUrl('emission://login_token?token=nrelop_study_subgroup_random') => nrelop_study_subgroup_random
+//  * @example getTokenFromUrl('traisimove://login_token?token=nrelop_study_subgroup_random') => nrelop_study_subgroup_random
 //  * @example getTokenFromUrl('nrelopenpath://login_token?token=nrelop_study_subgroup_random') => nrelop_study_subgroup_random
 
 import { getStudyNameFromToken, getSubgroupFromToken, getTokenFromUrl } from '../js/config/opcode';
@@ -60,8 +60,8 @@ describe('opcode', () => {
       expect(getTokenFromUrl(url)).toMatch(/^nrelop_open-access_foo_[a-zA-Z0-9]{32}$/);
     });
 
-    it('generates a token for an emission://join URL', () => {
-      const url = 'emission://join?study_config=great-study';
+    it('generates a token for an traisimove://join URL', () => {
+      const url = 'traisimove://join?study_config=great-study';
       expect(getTokenFromUrl(url)).toMatch(/^nrelop_great-study_default_[a-zA-Z0-9]{32}$/);
     });
 
@@ -74,7 +74,7 @@ describe('opcode', () => {
       expect(() => getTokenFromUrl('https://open-access-openpath.nrel.gov/invalid/')).toThrow();
       expect(() => getTokenFromUrl('nrelopenpath://jion?study_config=open-access')).toThrow();
       expect(() =>
-        getTokenFromUrl('emission://togin_loken?token=nrelop_open-access_000'),
+        getTokenFromUrl('traisimove://togin_loken?token=nrelop_open-access_000'),
       ).toThrow();
     });
   });
