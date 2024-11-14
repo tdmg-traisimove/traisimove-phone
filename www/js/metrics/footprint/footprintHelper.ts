@@ -31,7 +31,7 @@ const DEFAULT_FOOTPRINT_GOALS = {
       color: darkWarn,
     },
   ],
-  goals_footnote: { [lang]: i18next.t('metrics.footprint.us-goals-footnote') },
+  goals_footnote: null // { [lang]: i18next.t('metrics.footprint.us-goals-footnote') },
 };
 
 export function getFootprintGoals(appConfig: AppConfig, addFootnote: (footnote: string) => any) {
