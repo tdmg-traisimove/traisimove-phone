@@ -16,7 +16,7 @@
 
   "control": {
     "profile-tab": "Profile",
-    "edit-demographics": "Edit Demographics",
+    "edit-demographics": "Edit Registration & Contact.",
     "tracking": "Tracking",
     "app-status": "App Status",
     "incorrect-app-status": "Please update permissions",
