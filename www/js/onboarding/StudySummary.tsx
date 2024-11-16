@@ -23,7 +23,7 @@ const StudySummary = () => {
     <>
       <Text style={styles.title}>{templateText?.deployment_name}</Text>
       <Text style={styles.studyName}>
-        {appConfig?.intro?.deployment_partner_name + ' ' + templateText?.deployment_name}
+        {appConfig?.intro?.deployment_partner_name}
       </Text>
       <View>
         <Text style={styles.text}>{'✔️  ' + templateText?.summary_line_1} </Text>
