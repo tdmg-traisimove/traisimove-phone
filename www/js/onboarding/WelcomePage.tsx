@@ -161,7 +161,7 @@ const WelcomePage = () => {
               <Text>The Travel Activity Internet Survey Interface (TRAISI) Move application by the Travel Demand Modelling Group (TDMG) at the University of Toronto, enables real-time data collection on travel behaviour. This data allows researchers to analyze travel patterns with exceptional detail and accuracy, supports informed infrastructure planning, provides real-time insights into mobility trends, and aids in the development of sustainable urban environments.</Text>
               <Text style={{ marginTop: 10, fontWeight: 'bold' }}>Tips for Correct Operation:</Text>
               <Text>
-                Tips for Correct Operation: Please ensure that all status checks remain enabled throughout the data collection period. For any questions, please contact the Principal Investigator (PI) at the TDMG via email at:
+                Please ensure that all status checks remain enabled throughout the data collection period. For any questions, please contact the Principal Investigator (PI) at the TDMG via email at:
                 {" "}
                 <Text style={{ color: colors.primary}} >
                     khandker.nurulhabib@utoronto.ca
