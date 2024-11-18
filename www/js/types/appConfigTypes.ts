@@ -6,7 +6,7 @@ export type AppConfig = {
   server: ServerConnConfig;
   intro: IntroConfig;
   survey_info: {
-    'trip-labels': 'MULTILABEL' | 'ENKETO';
+    'trip-labels': 'MULTILABEL' | 'ENKETO' | 'MULTILABEL+ENKETO';
     surveys: EnketoSurveyConfig;
     buttons?: SurveyButtonsConfig;
   };

@@ -104,6 +104,13 @@ const TripCard = ({ trip, isFirstInList }: Props) => {
           </View>
           <View style={[cardStyles.panelSection, { marginBottom: 0 }]}>
             {/* mode and purpose buttons / survey button */}
+            {appConfig?.survey_info?.['trip-labels'] == 'MULTILABEL+ENKETO' && (
+              <>
+              <MultilabelButtonGroup trip={trip} />
+              <Text>Survey</Text>
+              <UserInputButton timelineEntry={trip} />
+              </>
+            )}
             {appConfig?.survey_info?.['trip-labels'] == 'MULTILABEL' && (
               <MultilabelButtonGroup trip={trip} />
             )}
