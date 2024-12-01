@@ -1,3 +1,11 @@
+TRAISI Move
+--------------------
+This is the phone component of TRAISI Move, based on OpenPath (previously known as e-mission).
+
+We keep the original README below in case it contains important information we missed.
+
+For our own interpretation of the installation steps, see [INSTALLATION.md](./INSTALLATION.md).
+
 e-mission phone app
 --------------------
 
