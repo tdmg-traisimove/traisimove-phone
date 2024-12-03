@@ -37,12 +37,8 @@ function mergeInTranslations(lang, fallbackLang) {
 }
 
 import enJson from '../i18n/en.json';
-import esJson from '../../locales/es/i18n/es.json';
-import loJson from '../../locales/lo/i18n/lo.json';
 const langs = {
   en: { translation: enJson },
-  es: { translation: mergeInTranslations(esJson, enJson) },
-  lo: { translation: mergeInTranslations(loJson, enJson) },
 };
 
 const locales = navigator?.languages?.length ? navigator.languages : [navigator.language];
@@ -69,11 +65,6 @@ import { en, es, fr, it, registerTranslation } from 'react-native-paper-dates';
 import { logWarn } from './plugin/logger';
 const rnpDatesLangs = {
   en,
-  es,
-  fr,
-  it,
-  lo: loJson['react-native-paper-dates'] /* Lao translations are not included in the library,
-                                          so we register them from 'lo.json' in /locales */,
 };
 for (const lang of Object.keys(rnpDatesLangs)) {
   registerTranslation(lang, rnpDatesLangs[lang]);
