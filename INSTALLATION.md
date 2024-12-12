@@ -21,5 +21,5 @@ npx ionic cordova resources
 8. Open `platforms/ios/TRAISI Move` with Xcode
 
 ## Run on the simulator
-1. Try `npm run build-dev-ios`. Try `npm run install` if it fails, then run again.
+1. Try `npm run build-dev-ios`. Try `npm install` if it fails, then run again.
 2. In the menu bar of Xcode, click on `Project` then `Run` (`⌘ R`)
