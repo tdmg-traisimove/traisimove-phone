@@ -65,7 +65,7 @@ const WelcomePage = () => {
     window['cordova'].plugins.clipboard.paste((clipboardContent: string) => {
       addStatReading('paste_token');
       try {
-        if (!clipboardContent?.startsWith('nrelop_') && !clipboardContent?.includes('://')) {
+        if (!clipboardContent?.startsWith('tdmgop_') && !clipboardContent?.includes('://')) {
           throw new Error('Clipboard content is not a valid token or URL');
         }
         handleTokenOrUrl(clipboardContent, 'paste');

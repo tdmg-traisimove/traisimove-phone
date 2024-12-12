@@ -30,12 +30,12 @@ function generateRandomString(length: number) {
 export function getStudyNameFromToken(token: string): string {
   const tokenParts = token.split('_');
   if (tokenParts.length < 3 || tokenParts.some((part) => part == '')) {
-    // all tokens must have at least nrelop_[studyname]_[usercode]
+    // all tokens must have at least tdmgop_[studyname]_[usercode]
     // and neither [studyname] nor [usercode] can be blank
     throw new Error(i18next.t('config.not-enough-parts-old-style', { token: token }));
   }
-  if (tokenParts[0] != 'nrelop') {
-    throw new Error(i18next.t('config.no-nrelop-start', { token: token }));
+  if (tokenParts[0] != 'tdmgop') {
+    throw new Error(i18next.t('config.no-tdmgop-start', { token: token }));
   }
   return tokenParts[1];
 }
@@ -74,7 +74,7 @@ export function getSubgroupFromToken(token: string, config: AppConfig): string |
   } else {
     /* old style study, expect token without subgroup
      * nothing further to validate at this point
-     * only validation required is `nrelop_` and valid study name
+     * only validation required is `tdmgop_` and valid study name
      * first is already handled in getStudyNameFromToken, second is handled
      * by default since download will fail if it is invalid
      */
@@ -105,23 +105,23 @@ export function getStudyNameFromUrl(url) {
 }
 
 /**
- * @example generateOpcodeFromUrl(new URL('https://open-access-openpath.nrel.gov/join/')) => nrelop_open-access_default_randomLongStringWith32Characters
- * @example generateOpcodeFromUrl(new URL('https://open-access-openpath.nrel.gov/join/?sub_group=foo')) => nrelop_open-access_foo_randomLongStringWith32Characters
+ * @example generateOpcodeFromUrl(new URL('https://open-access-openpath.nrel.gov/join/')) => tdmgop_open-access_default_randomLongStringWith32Characters
+ * @example generateOpcodeFromUrl(new URL('https://open-access-openpath.nrel.gov/join/?sub_group=foo')) => tdmgop_open-access_foo_randomLongStringWith32Characters
  */
 function generateOpcodeFromUrl(url: URL) {
   const studyName = getStudyNameFromUrl(url);
   const subgroup = url.searchParams.get('sub_group') || 'default';
   const randomString = generateRandomString(32);
   return url.searchParams.get('tester') == 'true'
-    ? `nrelop_${studyName}_${subgroup}_test_${randomString}`
-    : `nrelop_${studyName}_${subgroup}_${randomString}`;
+    ? `tdmgop_${studyName}_${subgroup}_test_${randomString}`
+    : `tdmgop_${studyName}_${subgroup}_${randomString}`;
 }
 
 /**
  * @description If the URL has a path of 'login_token', returns the token from the URL. If the URL has a path of 'join', generates a token and returns it.
- * @example getTokenFromUrl('https://open-access-openpath.nrel.gov/join/') => nrelop_open-access_default_randomLongStringWith32Characters
- * @example getTokenFromUrl('emission://login_token?token=nrelop_study_subgroup_random') => nrelop_study_subgroup_random
- * @example getTokenFromUrl('nrelopenpath://login_token?token=nrelop_study_subgroup_random') => nrelop_study_subgroup_random
+ * @example getTokenFromUrl('https://open-access-openpath.nrel.gov/join/') => tdmgop_open-access_default_randomLongStringWith32Characters
+ * @example getTokenFromUrl('emission://login_token?token=tdmgop_study_subgroup_random') => tdmgop_study_subgroup_random
+ * @example getTokenFromUrl('nrelopenpath://login_token?token=tdmgop_study_subgroup_random') => tdmgop_study_subgroup_random
  */
 export function getTokenFromUrl(url: string) {
   const parsedUrl = new URL(url);

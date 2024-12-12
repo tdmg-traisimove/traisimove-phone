@@ -69,7 +69,7 @@ describe('dynamicConfig', () => {
       await expect(getConfig()).resolves.toBeNull();
     });
     it('should resolve with a valid config once joinWithTokenOrUrl is called for an nrel-commute token', async () => {
-      const validToken = `nrelop_${validStudyNrelCommute}_user1`;
+      const validToken = `tdmgop_${validStudyNrelCommute}_user1`;
       await joinWithTokenOrUrl(validToken);
       const config = await getConfig();
       expect(config!.server.connectUrl).toBe('https://nrel-commute-openpath.nrel.gov/api/');
@@ -81,7 +81,7 @@ describe('dynamicConfig', () => {
     });
 
     it('should resolve with a valid config once joinWithTokenOrUrl is called for a denver-casr token', async () => {
-      const validToken = `nrelop_${validStudyDenverCasr}_test_user1`;
+      const validToken = `tdmgop_${validStudyDenverCasr}_test_user1`;
       await joinWithTokenOrUrl(validToken);
       const config = await getConfig();
       expect(config!.server.connectUrl).toBe('https://denver-casr-openpath.nrel.gov/api/');
@@ -96,7 +96,7 @@ describe('dynamicConfig', () => {
   describe('joinWithTokenOrUrl', () => {
     // fake study (gotham-city-transit)
     it('returns false if the study is nonexistent', async () => {
-      const fakeBatmanToken = `nrelop_${fakeStudyName}_batman`;
+      const fakeBatmanToken = `tdmgop_${fakeStudyName}_batman`;
       await expect(joinWithTokenOrUrl(fakeBatmanToken)).resolves.toBe(false);
       expect(windowAlert).toHaveBeenLastCalledWith(
         expect.stringContaining(i18next.t('config.unable-download-config')),
@@ -105,7 +105,7 @@ describe('dynamicConfig', () => {
 
     // real study without subgroups (nrel-commute)
     it('returns false if the study exists but the token is invalid format', async () => {
-      const badToken1 = `nrelop_${validStudyNrelCommute}`; // doesn't have enough _
+      const badToken1 = `tdmgop_${validStudyNrelCommute}`; // doesn't have enough _
       await expect(joinWithTokenOrUrl(badToken1)).resolves.toBe(false);
       expect(windowAlert).toHaveBeenLastCalledWith(
         expect.stringContaining(
@@ -113,7 +113,7 @@ describe('dynamicConfig', () => {
         ),
       );
 
-      const badToken2 = `nrelop_${validStudyNrelCommute}_`; // doesn't have user code after last _
+      const badToken2 = `tdmgop_${validStudyNrelCommute}_`; // doesn't have user code after last _
       await expect(joinWithTokenOrUrl(badToken2)).resolves.toBe(false);
       expect(windowAlert).toHaveBeenLastCalledWith(
         expect.stringContaining(
@@ -121,21 +121,21 @@ describe('dynamicConfig', () => {
         ),
       );
 
-      const badToken3 = `invalid_${validStudyNrelCommute}_user3`; // doesn't start with nrelop_
+      const badToken3 = `invalid_${validStudyNrelCommute}_user3`; // doesn't start with tdmgop_
       await expect(joinWithTokenOrUrl(badToken3)).resolves.toBe(false);
       expect(windowAlert).toHaveBeenLastCalledWith(
-        expect.stringContaining(i18next.t('config.no-nrelop-start', { token: badToken3 })),
+        expect.stringContaining(i18next.t('config.no-tdmgop-start', { token: badToken3 })),
       );
     });
 
     it('returns true after successfully storing the config for a valid token', async () => {
-      const validToken = `nrelop_${validStudyNrelCommute}_user2`;
+      const validToken = `tdmgop_${validStudyNrelCommute}_user2`;
       await expect(joinWithTokenOrUrl(validToken)).resolves.toBe(true);
     });
 
     // real study with subgroups (denver-casr)
     it('returns false if the study uses subgroups but the token has no subgroup', async () => {
-      const tokenWithoutSubgroup = `nrelop_${validStudyDenverCasr}_user2`;
+      const tokenWithoutSubgroup = `tdmgop_${validStudyDenverCasr}_user2`;
       await expect(joinWithTokenOrUrl(tokenWithoutSubgroup)).resolves.toBe(false);
       expect(windowAlert).toHaveBeenLastCalledWith(
         expect.stringContaining(
@@ -144,7 +144,7 @@ describe('dynamicConfig', () => {
       );
     });
     it('returns false if the study uses subgroups and the token is invalid format', async () => {
-      const badToken1 = `nrelop_${validStudyDenverCasr}_test_`; // doesn't have user code after last _
+      const badToken1 = `tdmgop_${validStudyDenverCasr}_test_`; // doesn't have user code after last _
       await expect(joinWithTokenOrUrl(badToken1)).resolves.toBe(false);
       expect(windowAlert).toHaveBeenLastCalledWith(
         expect.stringContaining(
@@ -153,7 +153,7 @@ describe('dynamicConfig', () => {
       );
     });
     it('returns true after successfully storing the config for a valid token with subgroup', async () => {
-      const validToken = `nrelop_${validStudyDenverCasr}_test_user2`;
+      const validToken = `tdmgop_${validStudyDenverCasr}_test_user2`;
       await expect(joinWithTokenOrUrl(validToken)).resolves.toBe(true);
     });
   });

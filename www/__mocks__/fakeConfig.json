@@ -77,7 +77,7 @@
     "additional_trip_columns": [],
     "data_uuids_columns_exclude": [],
     "token_generate": true,
-    "token_prefix": "nrelop",
+    "token_prefix": "tdmgop",
     "map_heatmap": true,
     "map_bubble": true,
     "map_trip_lines": true,
