@@ -18,3 +18,15 @@ www/dist/
 config.xml
 package.json
 coverage/
+
+GoogleService-Info.plist
+google-services.json
+resources/android
+resources/ios
+resources/icon.png
+locales
+package-lock.json
+www/i18n/es.json
+www/i18n/fr.json
+www/i18n/it.json
+www/i18n/lo.json
