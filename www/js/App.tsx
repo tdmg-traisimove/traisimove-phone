@@ -21,6 +21,7 @@ import { addStatReading } from './plugin/clientStats';
 import useAppState from './useAppState';
 import { displayErrorMsg, logDebug } from './plugin/logger';
 import i18next from 'i18next';
+import PrePermissionsModal from './appstatus/PrePermissionsModal';
 
 export const AppContext = createContext<any>({});
 const CUSTOM_LABEL_KEYS_IN_DATABASE = ['mode', 'purpose'];
@@ -33,6 +34,7 @@ const App = () => {
   // will remain null while the onboarding state is still being determined
   const [onboardingState, setOnboardingState] = useState<OnboardingState | null>(null);
   const [permissionsPopupVis, setPermissionsPopupVis] = useState(false);
+  const [prePermissionsPopupVis, setPrePermissionsPopupVis] = useState(true);
   const [customLabelMap, setCustomLabelMap] = useState<CustomLabelMap>({});
   const appConfig = useAppConfig();
   const permissionStatus = usePermissionStatus();
@@ -124,7 +126,10 @@ const App = () => {
         {/* If we are fully consented, (route > PROTOCOL), the permissions popup can show if needed.
           This also includes if onboarding is DONE altogether (because "DONE" is > "PROTOCOL") */}
         {onboardingState && onboardingState.route > OnboardingRoute.PROTOCOL && (
+          <>
           <AppStatusModal permitVis={permissionsPopupVis} setPermitVis={setPermissionsPopupVis} />
+          <PrePermissionsModal visible={prePermissionsPopupVis} setVisible={setPrePermissionsPopupVis}/>
+          </>
         )}
       </AppContext.Provider>
       <AlertBar />
