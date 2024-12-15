@@ -46,6 +46,7 @@
     "collection": "Collection",
     "sync": "Sync",
     "button-accept": "I accept",
+    "continue": "Continue",
     "view-qrc": "My OPcode",
     "app-version": "App Version",
     "reminders-time-of-day": "Time of Day for Reminders ({{time}})",

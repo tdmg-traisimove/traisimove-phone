@@ -32,7 +32,7 @@ const PermissionsControls = ({ onAccept }) => {
       <View style={styles.buttonBox}>
         <Button onPress={() => refreshAllChecks(checkList)}>{t('intro.appstatus.refresh')}</Button>
         <Button onPress={onAccept} disabled={!overallStatus}>
-          {t('control.button-accept')}
+          {t('control.continue')}
         </Button>
       </View>
     </>
