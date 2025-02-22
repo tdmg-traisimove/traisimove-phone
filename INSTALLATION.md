@@ -3,22 +3,16 @@ Installation steps for TRAISI Move
 
 # iOS
 ## Setup the project
-1. Delete the whole following block in `bash setup/setup_native.sh`:
-```
-if [ $SETUP_ANDROID ] || ( [ !$SETUP_ANDROID ] && [ !$SETUP_IOS ] ); then
-...
-fi
-```
-2. Install [brew](https://brew.sh/)
-3. Try `bash setup/setup_native.sh` and install all the dependencies until it works
-4. `source setup/activate_native.sh`
-5. Run 
+1. Install [brew](https://brew.sh/)
+2. Try `bash setup/setup_native.sh` and install all the dependencies until it works
+3. `source setup/activate_native.sh`
+4. Run
 ``` shell
 cp resources/icon_ios.png resources_icon.png
 npx ionic cordova resources
 ```
-7. Paste the content of `resources/ios/icon` into `platforms/ios/TRAISI Move/Images.xcassets/AppIcon.appiconset`
-8. Open `platforms/ios/TRAISI Move` with Xcode
+5. Paste the content of `resources/ios/icon` into `platforms/ios/TRAISI Move/Images.xcassets/AppIcon.appiconset`
+6. Open `platforms/ios/TRAISI Move` with Xcode
 
 ## Run on the simulator
 1. Try `npm run build-dev-ios`. Try `npm install` if it fails, then run again.
@@ -41,15 +35,9 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/ # Your path might differ
 # on mac
 export JAVA_HOME=/opt/homebrew/opt/openjdk@17 # Your path might differ
 ```
-3. Delete the whole following block in `bash setup/setup_native.sh`:
-```
-if [ $SETUP_IOS ] || ( [ !$SETUP_ANDROID ] && [ !$SETUP_IOS ] ); then
-...
-fi
-```
-4. Run `bash setup/setup_native.sh`
-5. `source setup/activate_native.sh`
-6. Run 
+3. Run `bash setup/setup_native.sh`
+4. `source setup/activate_native.sh`
+5. Run
 ``` shell
 cp resources/icon_android.png resources_icon.png
 npx ionic cordova resources
@@ -69,5 +57,5 @@ npx ionic cordova resources
 5. In the menu bar of Android Studion, click on `Build`, then `Generate Signed Bundle / APK...`
 6. Select option `Android App Bundle`
 7. Select your keystore and fill the store password, the key and the key password
-8. Select `release` then click on `Finish`. 
+8. Select `release` then click on `Finish`.
 9. The bundle will be in `traisimove/platforms/android/app/release`. Upload it on the Play Store
