@@ -4,15 +4,21 @@ Installation steps for TRAISI Move
 # iOS
 ## Setup the project
 1. Install [brew](https://brew.sh/)
-2. Try `bash setup/setup_native.sh` and install all the dependencies until it works
-3. `source setup/activate_native.sh`
-4. Run
+2. Set ANDROID_HOME and ANDROID_SDK_ROOT to anything.
+``` shell
+# The values don't matter since we're not building for Android.
+export ANDROID_HOME=anything
+export ANDROID_SDK_ROOT=anything
+```
+3. Try `bash setup/setup_native.sh` and install all the dependencies until it works
+4. `source setup/activate_native.sh`
+5. Run
 ``` shell
 cp resources/icon_ios.png resources_icon.png
 npx ionic cordova resources
 ```
-5. Paste the content of `resources/ios/icon` into `platforms/ios/TRAISI Move/Images.xcassets/AppIcon.appiconset`
-6. Open `platforms/ios/TRAISI Move` with Xcode
+6. Paste the content of `resources/ios/icon` into `platforms/ios/TRAISI Move/Images.xcassets/AppIcon.appiconset`
+7. Open `platforms/ios/TRAISI Move` with Xcode
 
 ## Run on the simulator
 1. Try `npm run build-dev-ios`. Try `npm install` if it fails, then run again.
@@ -35,9 +41,18 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/ # Your path might differ
 # on mac
 export JAVA_HOME=/opt/homebrew/opt/openjdk@17 # Your path might differ
 ```
-3. Run `bash setup/setup_native.sh`
-4. `source setup/activate_native.sh`
-5. Run
+3. Set ANDROID_HOME and ANDROID_SDK_ROOT.
+``` shell
+# On linux
+export ANDROID_HOME=$HOME/Android/Sdk # Your path might differ
+export ANDROID_SDK_ROOT=/usr/lib/android-sd # Your path might differ
+# On mac
+export ANDROID_HOME=~/Library/Android/sdk # Your path might differ
+export ANDROID_SDK_ROOT=~/Library/Android/sdk # Your path might differ
+```
+4. Run `bash setup/setup_native.sh`
+5. `source setup/activate_native.sh`
+6. Run
 ``` shell
 cp resources/icon_android.png resources_icon.png
 npx ionic cordova resources
