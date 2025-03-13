@@ -86,9 +86,17 @@ fi
 
 ./bin/configure_xml_and_json.js cordovabuild
 
-echo "Copying fake FCM configurations for android and iOS"
-cp setup/GoogleService-Info.fake.for_ci.plist GoogleService-Info.plist
-cp setup/google-services.fake.for_ci.json google-services.json
+echo "Checking for FCM configuration files"
+FCM_ANDROID_FILE="google-services.json"
+FCM_IOS_FILE="GoogleService-Info.plist"
+if [[ ! -f "$FCM_ANDROID_FILE" ]]; then
+  echo "Error: $FCM_ANDROID_FILE is missing"
+  exit 1
+fi
+if [[ ! -f "$FCM_IOS_FILE" ]]; then
+  echo "Error: $FCM_IOS_FILE is missing"
+  exit 1
+fi
 
 echo "Setting up all npm packages"
 npm install

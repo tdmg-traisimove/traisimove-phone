@@ -1,6 +1,11 @@
 # Installation
 Installation steps for TRAISI Move
 
+# Prerequisites
+Download the Firebase files and place them into the project's root directory.
+google-services.json: https://console.firebase.google.com/u/0/project/traisi-move/settings/general/android:ca.utoronto.tdmg.traisimove
+GoogleService-Info.plist: https://console.firebase.google.com/u/0/project/traisi-move/settings/general/ios:ca.utoronto.tdmg.traisimove
+
 # iOS
 ## Setup the project
 1. Install [brew](https://brew.sh/)
