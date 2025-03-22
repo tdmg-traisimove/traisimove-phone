@@ -19,7 +19,7 @@ export ANDROID_SDK_ROOT=anything
 4. `source setup/activate_native.sh`
 5. Run
 ``` shell
-cp resources/icon_ios.png resources_icon.png
+cp resources/icon_ios.png resources/icon.png
 npx ionic cordova resources
 ```
 6. Paste the content of `resources/ios/icon` into `platforms/ios/TRAISI Move/Images.xcassets/AppIcon.appiconset`
@@ -50,7 +50,7 @@ export JAVA_HOME=/opt/homebrew/opt/openjdk@17 # Your path might differ
 ``` shell
 # On linux
 export ANDROID_HOME=$HOME/Android/Sdk # Your path might differ
-export ANDROID_SDK_ROOT=/usr/lib/android-sd # Your path might differ
+export ANDROID_SDK_ROOT=/usr/lib/android-sdk # Your path might differ
 # On mac
 export ANDROID_HOME=~/Library/Android/sdk # Your path might differ
 export ANDROID_SDK_ROOT=~/Library/Android/sdk # Your path might differ
@@ -59,7 +59,7 @@ export ANDROID_SDK_ROOT=~/Library/Android/sdk # Your path might differ
 5. `source setup/activate_native.sh`
 6. Run
 ``` shell
-cp resources/icon_android.png resources_icon.png
+cp resources/icon_android.png resources/icon.png
 npx ionic cordova resources
 ```
 
