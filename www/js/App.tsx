@@ -35,6 +35,7 @@ const App = () => {
   const [onboardingState, setOnboardingState] = useState<OnboardingState | null>(null);
   const [permissionsPopupVis, setPermissionsPopupVis] = useState(false);
   const [prePermissionsPopupVis, setPrePermissionsPopupVis] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [customLabelMap, setCustomLabelMap] = useState<CustomLabelMap>({});
   const appConfig = useAppConfig();
   const permissionStatus = usePermissionStatus();
