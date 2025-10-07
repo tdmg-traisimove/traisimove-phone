@@ -25,7 +25,7 @@ import {
   filterByNameAndVersion,
   resolveSurveyButtonConfig,
 } from '../survey/enketo/enketoHelper';
-import { AppConfig } from '../types/appConfigTypes';
+import { DeploymentConfig } from 'nrel-openpath-deploy-configs';
 import { Point, Feature } from 'geojson';
 import { ble_matching, base_modes } from 'e-mission-common';
 
@@ -111,7 +111,7 @@ const getUnprocessedInputQuery = (pipelineRange: TimestampRange) => ({
 function updateUnprocessedInputs(
   labelsPromises: Array<Promise<any>>,
   notesPromises: Array<Promise<any>>,
-  appConfig: AppConfig,
+  appConfig: DeploymentConfig,
 ) {
   return Promise.all([...labelsPromises, ...notesPromises]).then((comboResults) => {
     const labelResults = comboResults.slice(0, labelsPromises.length);
@@ -146,7 +146,7 @@ function updateUnprocessedInputs(
  */
 export async function updateLocalUnprocessedInputs(
   pipelineRange: TimestampRange,
-  appConfig: AppConfig,
+  appConfig: DeploymentConfig,
 ) {
   const BEMUserCache = window['cordova'].plugins.BEMUserCache;
   const tq = getUnprocessedInputQuery(pipelineRange);
@@ -168,8 +168,9 @@ export async function updateLocalUnprocessedInputs(
  */
 export async function updateAllUnprocessedInputs(
   pipelineRange: TimestampRange,
-  appConfig: AppConfig,
+  appConfig: DeploymentConfig,
 ) {
+  logDebug(`timelineHelper: updateAllUnprocessedInputs for ${JSON.stringify(pipelineRange)}`);
   const tq = getUnprocessedInputQuery(pipelineRange);
   const getMethod = window['cordova'].plugins.BEMUserCache.getMessagesForInterval;
   const labelsPromises = keysForLabelInputs(appConfig).map((key) =>
@@ -198,7 +199,7 @@ export async function updateUnprocessedBleScans(queryRange: TimestampRange) {
   );
 }
 
-export function keysForLabelInputs(appConfig: AppConfig) {
+export function keysForLabelInputs(appConfig: DeploymentConfig) {
   if (appConfig.survey_info?.['trip-labels'] == 'ENKETO') {
     return ['manual/trip_user_input'];
   } else {
@@ -206,7 +207,7 @@ export function keysForLabelInputs(appConfig: AppConfig) {
   }
 }
 
-function keysForNotesInputs(appConfig: AppConfig) {
+function keysForNotesInputs(appConfig: DeploymentConfig) {
   const notesKeys: string[] = [];
   if (appConfig.survey_info?.buttons?.['trip-notes']) notesKeys.push('manual/trip_addition_input');
   if (appConfig.survey_info?.buttons?.['place-notes'])
@@ -286,25 +287,28 @@ const unpackServerData = (obj: BEMData<any>) =>
     origin_key: obj.metadata.origin_key || obj.metadata.key,
   };
 
-export function readAllCompositeTrips(startTs: number, endTs: number) {
-  const readPromises = [getRawEntries(['analysis/composite_trip'], startTs, endTs, 'data.end_ts')];
-  return Promise.all(readPromises)
-    .then(([ctList]: [ServerResponse<TimelineEntry>]) => {
-      return ctList.phone_data.map((ct) => {
-        const unpackedCt = unpackServerData(ct);
-        return {
-          ...unpackedCt,
-          start_confirmed_place: unpackServerData(unpackedCt.start_confirmed_place),
-          end_confirmed_place: unpackServerData(unpackedCt.end_confirmed_place),
-          locations: unpackedCt.locations?.map(unpackServerData),
-          sections: unpackedCt.sections?.map(unpackServerData),
-        };
-      });
-    })
-    .catch((err) => {
-      displayError(err, 'while reading confirmed trips');
-      return [];
-    });
+const unpackCompositeTrip = (ct: BEMData<CompositeTrip>): CompositeTrip => {
+  const unpackedCt = unpackServerData(ct);
+  return {
+    ...unpackedCt,
+    start_confirmed_place: unpackServerData(unpackedCt.start_confirmed_place),
+    end_confirmed_place: unpackServerData(unpackedCt.end_confirmed_place),
+    locations: unpackedCt.locations?.map(unpackServerData),
+    sections: unpackedCt.sections?.map(unpackServerData),
+  };
+};
+
+export async function readAllCompositeTrips(
+  startTs: number,
+  endTs: number,
+): Promise<CompositeTrip[]> {
+  try {
+    const ctList = await getRawEntries(['analysis/composite_trip'], startTs, endTs, 'data.end_ts');
+    return ctList.phone_data.map((ct) => unpackCompositeTrip(ct));
+  } catch (err) {
+    displayError(err, 'while reading confirmed trips');
+    return [];
+  }
 }
 
 const dateTime2localdate = (currtime: DateTime, tz: string) => ({
@@ -335,7 +339,7 @@ const getSectionSummaryForUnprocessed = (section: SectionData, modeProp): Sectio
  */
 function points2UnprocessedTrip(
   locationPoints: Array<BEMData<FilteredLocation>>,
-  appConfig: AppConfig,
+  appConfig: DeploymentConfig,
 ): UnprocessedTrip {
   const startPoint = locationPoints[0];
   const endPoint = locationPoints[locationPoints.length - 1];
@@ -433,7 +437,7 @@ const tsEntrySort = (e1: BEMData<{ ts: number }>, e2: BEMData<{ ts: number }>) =
  */
 function tripTransitions2UnprocessedTrip(
   trip: Array<any>,
-  appConfig: AppConfig,
+  appConfig: DeploymentConfig,
 ): Promise<UnprocessedTrip | undefined> {
   const tripStartTransition = trip[0];
   const tripEndTransition = trip[1];
@@ -587,7 +591,7 @@ function linkTrips(trip1, trip2) {
 export function readUnprocessedTrips(
   startTs: number,
   endTs: number,
-  appConfig: AppConfig,
+  appConfig: DeploymentConfig,
   lastProcessedTrip?: CompositeTrip,
 ) {
   const tq = { key: 'write_ts', startTs, endTs };

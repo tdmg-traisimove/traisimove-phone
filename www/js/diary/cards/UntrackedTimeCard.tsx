@@ -13,7 +13,7 @@ import { Text } from 'react-native-paper';
 import { getTheme } from '../../appTheme';
 import { useTranslation } from 'react-i18next';
 import { DiaryCard, cardStyles } from './DiaryCard';
-import { useAddressNames } from '../addressNamesHelper';
+import useAddressNames from '../useAddressNames';
 import useDerivedProperties from '../useDerivedProperties';
 import StartEndLocations from '../components/StartEndLocations';
 
@@ -33,7 +33,7 @@ const UntrackedTimeCard = ({ triplike }: Props) => {
         accessibilityLabel={`Untracked time from ${displayStartTime} to ${displayEndTime}`}>
         <View>
           {/*  date and distance */}
-          <Text style={{ fontSize: 14, textAlign: 'center' }}>
+          <Text style={{ fontSize: 14, margin: 'auto' }}>
             <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
               {displayDate}
             </Text>

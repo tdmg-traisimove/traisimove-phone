@@ -1,4 +1,4 @@
-import packageJsonBuild from '../../package.cordovabuild.json';
+import packageJson from '../../package.json';
 
 export let alerts: string[] = [];
 
@@ -16,7 +16,7 @@ export const mockLogger = () => {
 export const mockCordova = () => {
   window['cordova'] ||= {};
   window['cordova'].platformId ||= 'ios';
-  window['cordova'].platformVersion ||= packageJsonBuild.dependencies['cordova-ios'];
+  window['cordova'].platformVersion ||= packageJson.dependencies['cordova-ios'];
   window['cordova'].plugins ||= {};
 };
 
@@ -32,8 +32,14 @@ export const mockReminders = () => {
 
 export const mockDevice = () => {
   window['device'] ||= {};
+  window['device'].cordova ||= packageJson.dependencies['cordova-ios'];
+  window['device'].model ||= 'iPhone 12';
   window['device'].platform ||= 'ios';
+  window['device'].uuid ||= '123456';
   window['device'].version ||= '14.0.0';
+  window['device'].manufacturer ||= 'Apple';
+  window['device'].isVirtual ||= false;
+  window['device'].serial ||= 'ABC1234567890';
 };
 
 export const mockGetAppVersion = () => {
@@ -223,6 +229,7 @@ export const mockBEMDataCollection = () => {
     },
   };
   window['cordova'] ||= {};
+  window['cordova'].plugins ||= {};
   window['cordova'].plugins.BEMDataCollection = mockBEMDataCollection;
 };
 

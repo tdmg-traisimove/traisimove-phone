@@ -1,19 +1,7 @@
 import i18next from 'i18next';
 import { logDebug } from '../plugin/logger';
-import AppConfig from '../types/appConfigTypes';
-
-/**
- * Adapted from https://stackoverflow.com/a/63363662/4040267
- * made available under a CC BY-SA 4.0 license
- */
-function generateRandomString(length: number) {
-  const randomInts = window.crypto.getRandomValues(new Uint8Array(length * 2));
-  const randomChars = Array.from(randomInts).map((b) => String.fromCharCode(b));
-  const randomString = randomChars.join('');
-  const validRandomString = window.btoa(randomString).replace(/[+/]/g, '');
-  const truncatedRandomString = validRandomString.substring(0, length);
-  return truncatedRandomString;
-}
+import { DeploymentConfig } from 'nrel-openpath-deploy-configs';
+import { opcode } from 'e-mission-common';
 
 /*
  * We want to support both old style and new style tokens.
@@ -40,7 +28,7 @@ export function getStudyNameFromToken(token: string): string {
   return tokenParts[1];
 }
 
-export function getSubgroupFromToken(token: string, config: AppConfig): string | undefined {
+export function getSubgroupFromToken(token: string, config: DeploymentConfig): string | undefined {
   if (config.opcode) {
     // new style study, expects token with sub-group
     const tokenParts = token.split('_');
@@ -111,7 +99,7 @@ export function getStudyNameFromUrl(url) {
 function generateOpcodeFromUrl(url: URL) {
   const studyName = getStudyNameFromUrl(url);
   const subgroup = url.searchParams.get('sub_group') || 'default';
-  const randomString = generateRandomString(32);
+  const randomString = opcode.generate_random_string(32, undefined);
   return url.searchParams.get('tester') == 'true'
     ? `tdmgop_${studyName}_${subgroup}_test_${randomString}`
     : `tdmgop_${studyName}_${subgroup}_${randomString}`;

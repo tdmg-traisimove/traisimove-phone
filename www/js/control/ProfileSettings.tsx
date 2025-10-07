@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { Modal, StyleSheet, ScrollView } from 'react-native';
-import { Dialog, Button, useTheme, Text, Appbar, TextInput } from 'react-native-paper';
+import { Modal, StyleSheet, ScrollView, View } from 'react-native';
+import { Dialog, Button, useTheme, Text, Appbar, TextInput, Divider } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import ExpansionSection from './ExpandMenu';
 import SettingRow from './SettingRow';
@@ -18,14 +18,8 @@ import { uploadFile } from './uploadService';
 import ActionMenu from '../components/ActionMenu';
 import SensedPage from './SensedPage';
 import LogPage from './LogPage';
-import ControlSyncHelper, { ForceSyncRow, getHelperSyncSettings } from './ControlSyncHelper';
-import ControlCollectionHelper, {
-  getHelperCollectionSettings,
-  getState,
-  isMediumAccuracy,
-  helperToggleLowAccuracy,
-  forceTransition,
-} from './ControlCollectionHelper';
+import EditSyncConfigModal, { ForceSyncRow } from './EditSyncConfigModal';
+import EditTrackingConfigModal, { getState, forceTransition } from './EditTrackingConfigModal';
 import {
   _cacheResourcesFetchPromise,
   loadNewConfig,
@@ -46,7 +40,7 @@ import {
   setReminderPrefs,
 } from '../splash/notifScheduler';
 import { DateTime } from 'luxon';
-import { AppConfig } from '../types/appConfigTypes';
+import { DeploymentConfig } from 'nrel-openpath-deploy-configs';
 import NavBar, { NavBarButton } from '../components/NavBar';
 
 //any pure functions can go outside
@@ -55,10 +49,7 @@ const ProfileSettings = () => {
   const { t } = useTranslation();
   const appConfig = useAppConfig();
   const { colors } = useTheme();
-  const { setPermissionsPopupVis } = useContext(AppContext);
-
-  const editCollectionConfig = () => setEditCollectionVis(true);
-  const editSyncConfig = () => setEditSync(true);
+  const { setPermissionsPopupVis, userProfile, updateUserProfile } = useContext(AppContext);
 
   //states and variables used to control/create the settings
   const [opCodeVis, setOpCodeVis] = useState(false);
@@ -72,17 +63,14 @@ const ProfileSettings = () => {
   const [uploadVis, setUploadVis] = useState(false);
   const [showingSensed, setShowingSensed] = useState(false);
   const [showingLog, setShowingLog] = useState(false);
-  const [editSync, setEditSync] = useState(false);
+  const [editSyncVis, setEditSyncVis] = useState(false);
   const [editCollectionVis, setEditCollectionVis] = useState(false);
 
-  // const [collectConfig, setCollectConfig] = useState({});
   const [collectSettings, setCollectSettings] = useState<any>({});
   const [notificationSettings, setNotificationSettings] = useState<any>({});
   const [authSettings, setAuthSettings] = useState<any>({});
-  const [syncSettings, setSyncSettings] = useState<any>({});
-  const [cacheResult, setCacheResult] = useState('');
   const [connectSettings, setConnectSettings] = useState({});
-  const [uiConfig, setUiConfig] = useState<AppConfig | undefined>(undefined);
+  const [uiConfig, setUiConfig] = useState<DeploymentConfig | undefined>(undefined);
   const [consentDoc, setConsentDoc] = useState<any>({});
   const [dumpDate, setDumpDate] = useState(new Date());
   const [uploadReason, setUploadReason] = useState('');
@@ -102,8 +90,7 @@ const ProfileSettings = () => {
   const [isScheduling, setIsScheduling] = useState(false);
 
   useEffect(() => {
-    //added appConfig.name needed to be defined because appConfig was defined but empty
-    if (appConfig && appConfig.name) {
+    if (appConfig && Object.keys(appConfig).length) {
       whenReady(appConfig);
     }
   }, [appConfig]);
@@ -112,7 +99,6 @@ const ProfileSettings = () => {
     refreshCollectSettings();
     refreshNotificationSettings();
     getOPCode();
-    getSyncSettings();
     getConnectURL();
     getAppVersion().then((version) => {
       appVersion.current = version;
@@ -124,18 +110,13 @@ const ProfileSettings = () => {
     refreshNotificationSettings();
   }, [uiConfig]);
 
-  function whenReady(newAppConfig: AppConfig) {
+  function whenReady(newAppConfig: DeploymentConfig) {
     const tempUiConfig = newAppConfig;
 
-    // Backwards compat hack to fill in the `app_required` based on the
-    // old-style "program_or_study"
-    // remove this at the end of 2023 when all programs have been migrated over
-    if (tempUiConfig.intro.app_required == undefined) {
-      tempUiConfig.intro.app_required = tempUiConfig?.intro.program_or_study == 'program';
-    }
-    tempUiConfig.opcode = tempUiConfig.opcode || {};
-    if (tempUiConfig.opcode.autogen == undefined) {
-      tempUiConfig.opcode.autogen = tempUiConfig?.intro.program_or_study == 'study';
+    if (tempUiConfig.opcode == undefined) {
+      tempUiConfig.opcode = {
+        autogen: tempUiConfig.intro.program_or_study == 'study',
+      };
     }
 
     if (tempUiConfig.reminderSchemes) {
@@ -145,6 +126,7 @@ const ProfileSettings = () => {
         isScheduling,
         setIsScheduling,
         scheduledPromise,
+        updateUserProfile,
       )
         .then(() => {
           logDebug('updated scheduled notifs');
@@ -160,24 +142,13 @@ const ProfileSettings = () => {
 
   async function refreshCollectSettings() {
     logDebug('refreshCollectSettings: collectSettings = ' + JSON.stringify(collectSettings));
-    const newCollectSettings: any = {};
-
-    // // refresh collect plugin configuration
-    const collectionPluginConfig = await getHelperCollectionSettings();
-    newCollectSettings.config = collectionPluginConfig;
-
     const collectionPluginState = await getState();
-    newCollectSettings.state = collectionPluginState;
-    newCollectSettings.trackingOn =
-      collectionPluginState != 'local.state.tracking_stopped' &&
-      collectionPluginState != 'STATE_TRACKING_STOPPED';
-
-    const isLowAccuracy = await isMediumAccuracy();
-    if (typeof isLowAccuracy != 'undefined') {
-      newCollectSettings.lowAccuracy = isLowAccuracy;
-    }
-
-    setCollectSettings(newCollectSettings);
+    setCollectSettings({
+      state: collectionPluginState,
+      trackingOn:
+        collectionPluginState != 'local.state.tracking_stopped' &&
+        collectionPluginState != 'STATE_TRACKING_STOPPED',
+    });
   }
 
   //ensure ui table updated when editor closes
@@ -198,7 +169,13 @@ const ProfileSettings = () => {
     if (uiConfig?.reminderSchemes) {
       let promiseList: Promise<any>[] = [];
       promiseList.push(
-        getReminderPrefs(uiConfig.reminderSchemes, isScheduling, setIsScheduling, scheduledPromise),
+        getReminderPrefs(
+          uiConfig.reminderSchemes,
+          isScheduling,
+          setIsScheduling,
+          scheduledPromise,
+          updateUserProfile,
+        ),
       );
       promiseList.push(getScheduledNotifs(isScheduling, scheduledPromise));
       let resultList = await Promise.all(promiseList);
@@ -218,20 +195,6 @@ const ProfileSettings = () => {
       ${JSON.stringify(notificationSettings)} - ${JSON.stringify(newNotificationSettings)}`);
     setNotificationSettings(newNotificationSettings);
   }
-
-  async function getSyncSettings() {
-    const newSyncSettings: any = {};
-    getHelperSyncSettings().then((showConfig) => {
-      newSyncSettings.show_config = showConfig;
-      setSyncSettings(newSyncSettings);
-      logDebug('sync settings are: ' + JSON.stringify(syncSettings));
-    });
-  }
-
-  //update sync settings in the table when close editor
-  useEffect(() => {
-    getSyncSettings();
-  }, [editSync]);
 
   async function getConnectURL() {
     getSettings().then(
@@ -279,6 +242,7 @@ const ProfileSettings = () => {
         isScheduling,
         setIsScheduling,
         scheduledPromise,
+        updateUserProfile,
       ).then(() => {
         refreshNotificationSettings();
       });
@@ -303,13 +267,6 @@ const ProfileSettings = () => {
     const transitionToForce = collectSettings.trackingOn ? 'STOP_TRACKING' : 'START_TRACKING';
     await forceTransition(transitionToForce);
     refreshCollectSettings();
-  }
-
-  async function toggleLowAccuracy() {
-    let toggle = await helperToggleLowAccuracy();
-    setTimeout(() => {
-      refreshCollectSettings();
-    }, 1500);
   }
 
   async function refreshConfig() {
@@ -441,10 +398,6 @@ const ProfileSettings = () => {
           iconName="check"
           action={() => setPermissionsPopupVis(true)}></SettingRow>
         <SettingRow
-          textKey="control.medium-accuracy"
-          action={toggleLowAccuracy}
-          switchValue={collectSettings.lowAccuracy}></SettingRow>
-        <SettingRow
           textKey="control.download-json-dump"
           iconName="calendar"
           action={() => setDateDumpVis(true)}></SettingRow>
@@ -495,12 +448,15 @@ const ProfileSettings = () => {
             iconName="arrow-expand-right"
             action={() => setShowingSensed(true)}></SettingRow>
           <SettingRow
-            textKey="control.collection"
+            textKey="control.edit-tracking-config"
             iconName="pencil"
-            action={editCollectionConfig}></SettingRow>
-          <ControlDataTable controlData={collectSettings.config}></ControlDataTable>
-          <SettingRow textKey="control.sync" iconName="pencil" action={editSyncConfig}></SettingRow>
-          <ControlDataTable controlData={syncSettings.show_config}></ControlDataTable>
+            action={() => setEditCollectionVis(true)}
+          />
+          <SettingRow
+            textKey="control.edit-sync-config"
+            iconName="pencil"
+            action={() => setEditSyncVis(true)}
+          />
         </ExpansionSection>
         <SettingRow
           textKey="control.app-version"
@@ -657,16 +613,18 @@ const ProfileSettings = () => {
         open={dateDumpVis}
         setOpen={setDateDumpVis}
         minDate={
-          new Date(appConfig?.intro?.start_year, appConfig?.intro?.start_month - 1, 1)
+          new Date(
+            Number(appConfig?.intro?.start_year),
+            Number(appConfig?.intro?.start_month) - 1,
+            1,
+          )
         }></DataDatePicker>
 
       <SensedPage pageVis={showingSensed} setPageVis={setShowingSensed}></SensedPage>
       <LogPage pageVis={showingLog} setPageVis={setShowingLog}></LogPage>
 
-      <ControlSyncHelper editVis={editSync} setEditVis={setEditSync}></ControlSyncHelper>
-      <ControlCollectionHelper
-        editVis={editCollectionVis}
-        setEditVis={setEditCollectionVis}></ControlCollectionHelper>
+      <EditSyncConfigModal editVis={editSyncVis} setEditVis={setEditSyncVis} />
+      <EditTrackingConfigModal editVis={editCollectionVis} setEditVis={setEditCollectionVis} />
     </>
   );
 };

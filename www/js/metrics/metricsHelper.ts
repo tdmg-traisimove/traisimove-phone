@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import color from 'color';
 import { DayOfMetricData, MetricEntry, MetricValue } from './metricsTypes';
 import { logDebug } from '../plugin/logger';
-import { MetricName, groupingFields } from '../types/appConfigTypes';
+import DeploymentConfig, { MetricName, GroupingField } from 'nrel-openpath-deploy-configs';
 import { ImperialConfig } from '../config/useImperialConfig';
 import i18next from 'i18next';
 import { base_modes, metrics_summaries } from 'e-mission-common';
@@ -15,6 +15,25 @@ import {
 import { LabelOptions, RichMode } from '../types/labelTypes';
 import { labelOptions, textToLabelKey } from '../survey/multilabel/confirmHelper';
 import { UNCERTAIN_OPACITY } from '../components/charting';
+
+const GROUPING_FIELDS: GroupingField[] = [
+  'mode_confirm',
+  'purpose_confirm',
+  'replaced_mode_confirm',
+  'primary_ble_sensed_mode',
+  'survey',
+];
+
+/**
+ * When phone_dashboard_ui is defined, we show the metrics tab if there is at least one section defined in phone_dashboard_ui.
+ * Default is to show the metrics tab for MULTILABEL configs (hide for ENKETO)
+ */
+export function showMetricsTab(appConfig: DeploymentConfig) {
+  if (appConfig?.metrics?.phone_dashboard_ui !== undefined) {
+    return appConfig?.metrics?.phone_dashboard_ui?.sections?.length > 0;
+  }
+  return appConfig?.survey_info?.['trip-labels'] === 'MULTILABEL';
+}
 
 export function getUniqueLabelsForDays(metricDataDays: DayOfMetricData[]) {
   const uniqueLabels: string[] = [];
@@ -30,13 +49,13 @@ export function getUniqueLabelsForDays(metricDataDays: DayOfMetricData[]) {
 }
 
 /**
- * @description Trims the "grouping field" prefix from a metrics key. Grouping fields are defined in appConfigTypes.ts
+ * @description Trims the "grouping field" prefix from a metrics key
  * @example removeGroupingPrefix('mode_purpose_access_recreation') => 'access_recreation'
  * @example removeGroupingPrefix('primary_ble_sensed_mode_CAR') => 'CAR'
  * @returns The key without the prefix (or undefined if the key didn't start with a grouping field)
  */
 export const trimGroupingPrefix = (label: string) => {
-  for (let field of groupingFields) {
+  for (let field of GROUPING_FIELDS) {
     if (label.startsWith(field)) {
       return label.substring(field.length + 1);
     }
@@ -150,7 +169,7 @@ export function aggMetricEntries<T extends MetricName>(entries: MetricEntry<T>[]
   let acc = {};
   entries?.forEach((e) => {
     for (let field in e) {
-      if (groupingFields.some((f) => field.startsWith(f))) {
+      if (GROUPING_FIELDS.some((f) => field.startsWith(f))) {
         acc[field] = metrics_summaries.acc_value_of_metric(metricName, acc?.[field], e[field]);
       } else if (field == 'nUsers') {
         acc[field] = (acc[field] || 0) + e[field];
@@ -168,7 +187,7 @@ export function aggMetricEntries<T extends MetricName>(entries: MetricEntry<T>[]
 export function sumMetricEntry<T extends MetricName>(entry: MetricEntry<T>, metricName: T) {
   let acc;
   for (let field in entry) {
-    if (groupingFields.some((f) => field.startsWith(f))) {
+    if (GROUPING_FIELDS.some((f) => field.startsWith(f))) {
       acc = metrics_summaries.acc_value_of_metric(metricName, acc, entry[field]);
     }
   }

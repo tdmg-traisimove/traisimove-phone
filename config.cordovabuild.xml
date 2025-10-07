@@ -40,6 +40,7 @@
         <preference name="deployment-target" value="13.0"/>
         <hook src="hooks/before_compile/ios/ios_change_deployment.js" type="before_compile" />
         <hook src="hooks/after_platform_add/ios/ios_copy_locales.js" type="after_platform_add" />
+        <hook src="hooks/after_prepare/ios/ios_fix_deployment_target.js" type="after_prepare" />
         <resource-file src="GoogleService-Info.plist" />
         <preference name="WKWebViewOnly" value="true" />
         <preference name="WKSuspendInBackground" value="false" />
@@ -70,8 +71,6 @@
         <hook src="hooks/before_build/android/android_copy_locales.js" type="before_build" />
         <preference name="AndroidLaunchMode" value="singleInstance"/>
         <preference name="AndroidXEnabled" value="true" />
-        <preference name="GradlePluginKotlinEnabled" value="true" />
-        <preference name="GradlePluginKotlinVersion" value="1.7.10" />
         <resource-file src="google-services.json" target="app/google-services.json" />
         <hook src="hooks/before_build/android/android_set_provider.js" type="before_build" />
         <hook src="hooks/before_build/android/android_change_compile_implementation.js" type="before_build" />

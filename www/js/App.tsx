@@ -10,21 +10,16 @@ import {
 import { setServerConnSettings } from './config/serverConn';
 import AppStatusModal from './control/AppStatusModal';
 import usePermissionStatus from './usePermissionStatus';
-import { initPushNotify } from './splash/pushNotifySettings';
-import { initStoreDeviceSettings } from './splash/storeDeviceSettings';
-import { initRemoteNotifyHandler } from './splash/remoteNotifyHandler';
-// import { getUserCustomLabels } from './services/commHelper';
 import AlertBar from './components/AlertBar';
 import Main from './Main';
 import { joinWithTokenOrUrl } from './config/dynamicConfig';
 import { addStatReading } from './plugin/clientStats';
 import useAppState from './useAppState';
 import { displayErrorMsg, logDebug } from './plugin/logger';
+import { registerAndUpdateProfile, updateUserProfile, UserProfile } from './splash/userProfile';
 import i18next from 'i18next';
-import PrePermissionsModal from './appstatus/PrePermissionsModal';
 
 export const AppContext = createContext<any>({});
-const CUSTOM_LABEL_KEYS_IN_DATABASE = ['mode', 'purpose'];
 type CustomLabelMap = {
   [k: string]: string[];
 };
@@ -34,7 +29,7 @@ const App = () => {
   // will remain null while the onboarding state is still being determined
   const [onboardingState, setOnboardingState] = useState<OnboardingState | null>(null);
   const [permissionsPopupVis, setPermissionsPopupVis] = useState(false);
-  const [prePermissionsPopupVis, setPrePermissionsPopupVis] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [customLabelMap, setCustomLabelMap] = useState<CustomLabelMap>({});
   const appConfig = useAppConfig();
   const permissionStatus = usePermissionStatus();
@@ -72,11 +67,18 @@ const App = () => {
     setServerConnSettings(appConfig).then(() => {
       refreshOnboardingState();
     });
-    initPushNotify();
-    initStoreDeviceSettings();
-    initRemoteNotifyHandler();
-    // getUserCustomLabels(CUSTOM_LABEL_KEYS_IN_DATABASE).then((res) => setCustomLabelMap(res));
   }, [appConfig]);
+
+  // when onboardingState is DONE, call registerAndUpdateProfile
+  // and setUserProfile with the latest profile
+  useEffect(() => {
+    if (!appConfig || onboardingState?.route != OnboardingRoute.DONE) return;
+    registerAndUpdateProfile(appConfig)
+      .then(setUserProfile)
+      .catch((e) => {
+        displayErrorMsg(e, 'Error while registering and updating profile');
+      });
+  }, [appConfig, onboardingState?.route]);
 
   const appState = useAppState({});
   if (appState != 'active') {
@@ -102,6 +104,8 @@ const App = () => {
     permissionStatus,
     permissionsPopupVis,
     setPermissionsPopupVis,
+    userProfile,
+    updateUserProfile: (p) => updateUserProfile(p, userProfile).then(setUserProfile),
     customLabelMap,
     setCustomLabelMap,
   };
@@ -126,10 +130,7 @@ const App = () => {
         {/* If we are fully consented, (route > PROTOCOL), the permissions popup can show if needed.
           This also includes if onboarding is DONE altogether (because "DONE" is > "PROTOCOL") */}
         {onboardingState && onboardingState.route > OnboardingRoute.PROTOCOL && (
-          <>
           <AppStatusModal permitVis={permissionsPopupVis} setPermitVis={setPermissionsPopupVis} />
-          <PrePermissionsModal visible={prePermissionsPopupVis} setVisible={setPrePermissionsPopupVis}/>
-          </>
         )}
       </AppContext.Provider>
       <AlertBar />
