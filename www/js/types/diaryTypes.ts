@@ -4,8 +4,7 @@
 
 import { BaseModeKey, MotionTypeKey } from '../diary/diaryHelper';
 import useDerivedProperties from '../diary/useDerivedProperties';
-import { VehicleIdentity } from 'nrel-openpath-deploy-configs';
-import { MultilabelKey } from './labelTypes';
+import { VehicleIdentity, MultilabelKey } from 'op-deployment-configs';
 import { LocalDt } from './serverData';
 import { FeatureCollection, Feature, Geometry, Point, Position } from 'geojson';
 import { NominatimResponse } from './apiTypes';
@@ -128,9 +127,11 @@ export type CompositeTrip = {
  so a 'timeline entry' is either a trip or a place. */
 export type TimelineEntry = ConfirmedPlace | CompositeTrip;
 
-/* Type guard to disambiguate timeline entries as either trips or places
-  If it has a 'start_ts' and 'end_ts', it's a trip. Else, it's a place. */
-export const isTrip = (entry: TimelineEntry): entry is CompositeTrip => entry.key.endsWith('trip');
+// Type guards to disambiguate timeline entries as either trips or places
+export const isTrip = (entry: TimelineEntry): entry is CompositeTrip =>
+  entry.key.endsWith('trip') || entry.key.endsWith('untracked');
+export const isPlace = (entry: TimelineEntry): entry is ConfirmedPlace =>
+  entry.key.endsWith('place');
 
 export type TimestampRange = { start_ts: number; end_ts: number };
 

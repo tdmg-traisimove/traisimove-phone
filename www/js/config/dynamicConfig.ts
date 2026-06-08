@@ -2,13 +2,15 @@ import i18next from 'i18next';
 import { displayError, logDebug, logWarn } from '../plugin/logger';
 import { fetchUrlCached } from '../services/commHelper';
 import { storageClear, storageGet, storageSet } from '../plugin/storage';
-import { DeploymentConfig } from 'nrel-openpath-deploy-configs';
+import { DeploymentConfig } from 'op-deployment-configs';
 import {
   getStudyNameFromToken,
   getStudyNameFromUrl,
   getSubgroupFromToken,
   getTokenFromUrl,
 } from './opcode';
+import { Alerts } from '../components/AlertArea';
+import { setPendingOpcode } from '../onboarding/onboardingHelper';
 
 export const CONFIG_PHONE_UI = 'config/app_ui_config';
 export const CONFIG_PHONE_UI_KVSTORE = 'CONFIG_PHONE_UI';
@@ -17,8 +19,7 @@ export let _promisedConfig: Promise<DeploymentConfig | null> | undefined;
 export let configChanged = false;
 export const setConfigChanged = (b) => (configChanged = b);
 
-// used to test multiple configs, not used outside of test
-export const _test_resetPromisedConfig = () => {
+export const resetPromisedConfig = () => {
   _promisedConfig = undefined;
 };
 
@@ -55,7 +56,7 @@ function _fillSurveyInfo(config: Partial<DeploymentConfig>): DeploymentConfig {
 const _backwardsCompatFill = (config: Partial<DeploymentConfig>): DeploymentConfig =>
   _fillSurveyInfo(config);
 
-export let _cacheResourcesFetchPromise: Promise<(string | undefined)[]> = Promise.resolve([]);
+let _cacheResourcesFetchPromise: Promise<(string | undefined)[]> = Promise.resolve([]);
 /**
  * @description Fetch and cache any surveys resources that are referenced by URL in the config,
  *   as well as the label_options config if it is present.
@@ -71,7 +72,7 @@ function cacheResourcesFromConfig(config: DeploymentConfig) {
       fetchPromises.push(fetchUrlCached(survey['formPath'], { cache: 'reload' }));
     });
   }
-  if (config.label_options) {
+  if (config.label_options && typeof config.label_options == 'string') {
     fetchPromises.push(fetchUrlCached(config.label_options, { cache: 'reload' }));
   }
   _cacheResourcesFetchPromise = Promise.all(fetchPromises);
@@ -111,7 +112,7 @@ async function readConfigFromServer(studyLabel: string) {
  */
 async function fetchConfig(studyLabel: string, alreadyTriedLocal?: boolean) {
   logDebug('Received request to join ' + studyLabel);
-  let downloadURL = `https://raw.githubusercontent.com/tdmg-traisimove/traisimove-deploy-configs/main/configs/${studyLabel}.nrel-op.json`;
+  let downloadURL = `https://raw.githubusercontent.com/e-mission/op-deployment-configs/main/configs/${studyLabel}.nrel-op.json`;
   if (!__DEV__ || alreadyTriedLocal) {
     logDebug('Fetching config from github');
     const r = await fetch(downloadURL, { cache: 'reload' });
@@ -149,25 +150,25 @@ export function loadNewConfig(newToken: string, existingVersion?: number): Promi
         logDebug('UI_CONFIG: Not updating config because version is the same');
         return Promise.resolve(false);
       }
-      // we want to validate before saving because we don't want to save
-      // an invalid configuration
+      // validate now to avoid storing an invalid configuration
+      // if invalid, getSubgroupFromToken will error
       const subgroup = getSubgroupFromToken(newToken, downloadedConfig);
-      const toSaveConfig = {
-        ...downloadedConfig,
-        joined: { opcode: newToken, study_name: newStudyLabel, subgroup: subgroup },
-      };
+      logDebug(
+        `dynamicConfig: for opcode ${newToken} and subgroup ${subgroup}, ` +
+          `downloaded ${newStudyLabel} config @ version ${downloadedConfig.version}`,
+      );
       const storeConfigPromise = window['cordova'].plugins.BEMUserCache.putRWDocument(
         CONFIG_PHONE_UI,
-        toSaveConfig,
+        downloadedConfig,
       );
-      const storeInKVStorePromise = storageSet(CONFIG_PHONE_UI_KVSTORE, toSaveConfig);
-      logDebug('UI_CONFIG: about to store ' + JSON.stringify(toSaveConfig));
+      const storeInKVStorePromise = storageSet(CONFIG_PHONE_UI_KVSTORE, downloadedConfig);
+      logDebug('UI_CONFIG: about to store ' + JSON.stringify(downloadedConfig));
       // loaded new config, so it is both ready and changed
       return Promise.all([storeConfigPromise, storeInKVStorePromise])
         .then(([result, kvStoreResult]) => {
           logDebug(`UI_CONFIG: Stored dynamic config in KVStore successfully, 
             result = ${JSON.stringify(kvStoreResult)}`);
-          _promisedConfig = Promise.resolve(toSaveConfig);
+          _promisedConfig = Promise.resolve(downloadedConfig);
           configChanged = true;
           return true;
         })
@@ -188,7 +189,11 @@ export async function joinWithTokenOrUrl(tokenOrUrl: string) {
     tokenOrUrl = tokenOrUrl.trim();
     const token = tokenOrUrl.includes('://') ? getTokenFromUrl(tokenOrUrl) : tokenOrUrl;
     try {
-      return await loadNewConfig(token);
+      const updated = await loadNewConfig(token);
+      if (updated) {
+        setPendingOpcode(token);
+      }
+      return updated;
     } catch (err) {
       displayError(err, i18next.t('config.invalid-opcode-format'));
       return false;
@@ -228,4 +233,17 @@ export function getConfig(): Promise<DeploymentConfig | null> {
   });
   _promisedConfig = promise;
   return promise;
+}
+
+export async function refreshConfig(opcode: string, existingVersion?: number) {
+  Alerts.addMessage({ text: i18next.t('control.refreshing-app-config') });
+  const updated = await loadNewConfig(opcode, existingVersion);
+  if (updated) {
+    // wait for resources to finish downloading before reloading
+    _cacheResourcesFetchPromise
+      .then(() => window.location.reload())
+      .catch((error) => displayError(error, 'Failed to download a resource'));
+  } else {
+    Alerts.addMessage({ text: i18next.t('control.already-up-to-date') });
+  }
 }

@@ -3,23 +3,27 @@ import {
   getLabelInputDetails,
   getLabelOptions,
   inferFinalLabels,
+  _labelOptions,
   labelInputDetailsForTrip,
   labelKeyToReadable,
   labelKeyToText,
   readableLabelToKey,
   verifiabilityForTrip,
+  _resetLabelOptionsForTest,
+  _resetAppConfigForTest,
 } from '../js/survey/multilabel/confirmHelper';
 
 import initializedI18next from '../js/i18nextInit';
 import { CompositeTrip, UserInputEntry } from '../js/types/diaryTypes';
 import { UserInputMap } from '../js/TimelineContext';
+import DeploymentConfig from 'op-deployment-configs';
 window['i18next'] = initializedI18next;
 
 const fakeAppConfigWithModeOfStudy = {
   intro: {
     mode_studied: 'walk',
   },
-};
+} as unknown as DeploymentConfig;
 const fakeDefaultLabelOptions = {
   MODE: [
     { value: 'walk', baseMode: 'WALKING', met_equivalent: 'WALKING', kgCo2PerKm: 0 },
@@ -56,10 +60,27 @@ jest.mock('../js/services/commHelper', () => ({
 }));
 
 describe('confirmHelper', () => {
-  it('returns default labelOptions given a blank appConfig', async () => {
-    const labelOptions = await getLabelOptions({});
-    expect(labelOptions).toBeTruthy();
-    expect(labelOptions.MODE[0].value).toEqual('walk');
+  describe('getLabelOptions', () => {
+    it('returns default labelOptions given a blank appConfig', async () => {
+      const labelOptions = await getLabelOptions({} as DeploymentConfig);
+      expect(labelOptions).toBeTruthy();
+      expect(labelOptions.MODE[0].value).toEqual('walk');
+    });
+    it('returns inline labelOptions given an appConfig with inline labelOptions', async () => {
+      // (clear cached labelOptions from previous test)
+      _resetLabelOptionsForTest();
+      _resetAppConfigForTest();
+      const appConfigInlineLabelOptions = {
+        label_options: {
+          MODE: [{ value: 'scooter', met_equivalent: 'SCOOTER', kgCo2PerKm: 0 }],
+          PURPOSE: [{ value: 'leisure' }],
+          REPLACED_MODE: [{ value: 'no_travel' }, { value: 'scooter' }],
+        },
+      } as unknown as DeploymentConfig;
+      const labelOptions = await getLabelOptions(appConfigInlineLabelOptions);
+      expect(labelOptions).toBeTruthy();
+      expect(labelOptions.MODE[0].value).toEqual('scooter');
+    });
   });
 
   it('returns base labelInputDetails for a labelUserInput which does not have mode of study', () => {
@@ -94,6 +115,8 @@ describe('confirmHelper', () => {
     expect(mode2).toEqual(`my_niece's_tricycle_.`); // apostrophe and period are preserved
     const purpose1 = readableLabelToKey(`Going to the store to buy 12 eggs.`);
     expect(purpose1).toEqual('going_to_the_store_to_buy_12_eggs.'); // numbers are preserved
+    const purpose2 = readableLabelToKey(`Looking  for treasure`);
+    expect(purpose2).toEqual('looking_for_treasure'); // extra spaces replaced with single underscore
   });
 
   it(`converts keys to readable labels`, () => {
@@ -103,6 +126,8 @@ describe('confirmHelper', () => {
     expect(mode2).toEqual(`My Niece's Tricycle .`);
     const purpose1 = labelKeyToReadable(`going_to_the_store_to_buy_12_eggs.`);
     expect(purpose1).toEqual(`Going To The Store To Buy 12 Eggs.`);
+    const purpose2 = labelKeyToReadable(`looking__for_treasure`);
+    expect(purpose2).toEqual(`Looking  For Treasure`);
   });
 
   it('looks up a rich mode from a label key, or humanizes the label key if there is no rich mode', () => {
@@ -137,10 +162,10 @@ describe('confirmHelper', () => {
 
   it('gives no final inference when there are user labels and no inferred labels', () => {
     const fakeTrip = {} as CompositeTrip;
-    const fakeUserInput: UserInputMap = {
+    const fakeUserInput = {
       MODE: { data: { label: 'bike' } } as UserInputEntry,
       PURPOSE: { data: { label: 'shopping' } } as UserInputEntry,
-    };
+    } as UserInputMap;
     const final = inferFinalLabels(fakeTrip, fakeUserInput);
     expect(final.MODE?.value).toBeUndefined();
     expect(final.PURPOSE?.value).toBeUndefined();
@@ -154,7 +179,7 @@ describe('confirmHelper', () => {
     const fakeUserInput = {
       MODE: { data: { label: 'bike' } } as UserInputEntry,
       PURPOSE: { data: { label: 'shopping' } } as UserInputEntry,
-    };
+    } as UserInputMap;
     const final = inferFinalLabels(fakeTrip, fakeUserInput);
     expect(final.MODE?.value).toBeUndefined();
     expect(final.PURPOSE?.value).toBeUndefined();
@@ -170,7 +195,7 @@ describe('confirmHelper', () => {
     } as CompositeTrip;
     const fakeUserInput = {
       MODE: { data: { label: 'bike' } } as UserInputEntry,
-    };
+    } as UserInputMap;
     const final = inferFinalLabels(fakeTrip, fakeUserInput);
     expect(final.MODE?.value).toEqual('bike');
     expect(final.PURPOSE?.value).toEqual('shopping');

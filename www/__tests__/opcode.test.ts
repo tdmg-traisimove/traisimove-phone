@@ -3,7 +3,7 @@
 //  * @example getTokenFromUrl('nrelopenpath://login_token?token=tdmgop_study_subgroup_random') => tdmgop_study_subgroup_random
 
 import { getStudyNameFromToken, getSubgroupFromToken, getTokenFromUrl } from '../js/config/opcode';
-import { DeploymentConfig } from 'nrel-openpath-deploy-configs';
+import { DeploymentConfig } from 'op-deployment-configs';
 describe('opcode', () => {
   describe('getStudyNameFromToken', () => {
     const token = 'tdmgop_great-study_default_randomLongStringWith32Characters';

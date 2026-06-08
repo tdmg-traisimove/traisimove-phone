@@ -36,12 +36,12 @@ const LabelTab = () => {
   useEffect(() => {
     // if places are shown, we will skip filters and it will just be "show all"
     // https://github.com/e-mission/e-mission-docs/issues/894
-    if (appConfig.survey_info?.buttons?.['place-notes']) {
+    if (appConfig?.survey_info?.buttons?.['place-notes']) {
       setFilterInputs([]);
     } else {
       // initalize filters
       const tripFilters =
-        appConfig.survey_info?.['trip-labels'] == 'ENKETO'
+        appConfig?.survey_info?.['trip-labels'] == 'ENKETO'
           ? enketoConfiguredFilters
           : multilabelConfiguredFilters;
       const filtersWithState = tripFilters.map((f, i) => ({
@@ -96,6 +96,13 @@ const LabelTab = () => {
     }
     setDisplayedEntries(entriesToDisplay);
   }, [timelineMap, filterInputs, timelineLabelMap, filterRefreshTs]);
+
+  // once pipelineRange is set, update all unprocessed inputs
+  useEffect(() => {
+    if (appConfig && pipelineRange && pipelineRange.end_ts) {
+      updateAllUnprocessedInputs(pipelineRange, appConfig);
+    }
+  }, [pipelineRange]);
 
   const Tab = createStackNavigator();
 

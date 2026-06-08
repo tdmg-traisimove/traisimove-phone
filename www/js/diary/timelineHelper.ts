@@ -19,13 +19,12 @@ import {
   SectionSummary,
 } from '../types/diaryTypes';
 import { getLabelInputDetails, getLabelInputs } from '../survey/multilabel/confirmHelper';
-import { RichMode } from '../types/labelTypes';
 import {
   EnketoUserInputEntry,
   filterByNameAndVersion,
   resolveSurveyButtonConfig,
 } from '../survey/enketo/enketoHelper';
-import { DeploymentConfig } from 'nrel-openpath-deploy-configs';
+import { DeploymentConfig, RichMode } from 'op-deployment-configs';
 import { Point, Feature } from 'geojson';
 import { ble_matching, base_modes } from 'e-mission-common';
 
@@ -170,7 +169,6 @@ export async function updateAllUnprocessedInputs(
   pipelineRange: TimestampRange,
   appConfig: DeploymentConfig,
 ) {
-  logDebug(`timelineHelper: updateAllUnprocessedInputs for ${JSON.stringify(pipelineRange)}`);
   const tq = getUnprocessedInputQuery(pipelineRange);
   const getMethod = window['cordova'].plugins.BEMUserCache.getMessagesForInterval;
   const labelsPromises = keysForLabelInputs(appConfig).map((key) =>

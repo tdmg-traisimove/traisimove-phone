@@ -1,5 +1,9 @@
 import React, { useEffect, useState, createContext } from 'react';
-import { ActivityIndicator } from 'react-native-paper';
+import { AppStateStatus } from 'react-native';
+import { ActivityIndicator, PaperProvider } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import i18next from 'i18next';
+import packageJson from '../../package.json';
 import useAppConfig from './useAppConfig';
 import OnboardingStack from './onboarding/OnboardingStack';
 import {
@@ -8,31 +12,50 @@ import {
   getPendingOnboardingState,
 } from './onboarding/onboardingHelper';
 import { setServerConnSettings } from './config/serverConn';
-import AppStatusModal from './control/AppStatusModal';
+import AppStatusModal from './AppStatusModal';
 import usePermissionStatus from './usePermissionStatus';
-import AlertBar from './components/AlertBar';
+import AlertArea from './components/AlertArea';
 import Main from './Main';
 import { joinWithTokenOrUrl } from './config/dynamicConfig';
 import { addStatReading } from './plugin/clientStats';
-import useAppState from './useAppState';
 import { displayErrorMsg, logDebug } from './plugin/logger';
 import { registerAndUpdateProfile, updateUserProfile, UserProfile } from './splash/userProfile';
-import i18next from 'i18next';
+import { getTheme } from './appTheme';
+import DeploymentConfig from 'op-deployment-configs';
 
-export const AppContext = createContext<any>({});
+const URL_SCHEME = packageJson.cordova.plugins['cordova-plugin-customurlscheme'].URL_SCHEME;
+
+type AppContextProps = {
+  appConfig: DeploymentConfig | null;
+  handleTokenOrUrl: (tokenOrUrl: string, joinMethod: OnboardingJoinMethod) => Promise<boolean>;
+  onboardingState: OnboardingState | null;
+  setOnboardingState: React.Dispatch<React.SetStateAction<OnboardingState | null>>;
+  refreshOnboardingState: () => Promise<OnboardingState>;
+  permissionStatus: ReturnType<typeof usePermissionStatus>;
+  permissionsPopupVis: boolean;
+  setPermissionsPopupVis: React.Dispatch<React.SetStateAction<boolean>>;
+  userProfile: UserProfile | null;
+  updateUserProfile: (profileUpdate: Partial<UserProfile>) => Promise<void>;
+  customLabelMap: CustomLabelMap;
+  setCustomLabelMap: React.Dispatch<React.SetStateAction<CustomLabelMap>>;
+};
+
+export const AppContext = createContext<AppContextProps>({} as AppContextProps);
 type CustomLabelMap = {
   [k: string]: string[];
 };
 type OnboardingJoinMethod = 'scan' | 'paste' | 'textbox' | 'external';
 
-const App = () => {
+const theme = getTheme();
+
+const App = ({ appState }: { appState: AppStateStatus }) => {
   // will remain null while the onboarding state is still being determined
   const [onboardingState, setOnboardingState] = useState<OnboardingState | null>(null);
   const [permissionsPopupVis, setPermissionsPopupVis] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [customLabelMap, setCustomLabelMap] = useState<CustomLabelMap>({});
   const appConfig = useAppConfig();
-  const permissionStatus = usePermissionStatus();
+  const permissionStatus = usePermissionStatus(appState, appConfig);
 
   const refreshOnboardingState = () =>
     getPendingOnboardingState().then((state) => {
@@ -49,7 +72,7 @@ const App = () => {
     logDebug(`handleTokenOrUrl: onboardingState = ${JSON.stringify(onboardingState)}`);
     if (onboardingState.route > OnboardingRoute.WELCOME) {
       displayErrorMsg(i18next.t('join.already-logged-in', { token: onboardingState.opcode }));
-      return;
+      return false;
     }
     const configUpdated = await joinWithTokenOrUrl(tokenOrUrl);
     addStatReading('onboard', { configUpdated, joinMethod });
@@ -58,9 +81,16 @@ const App = () => {
     }
     return configUpdated;
   }
+
   // handleOpenURL function must be provided globally for cordova-plugin-customurlscheme
   // https://www.npmjs.com/package/cordova-plugin-customurlscheme
-  window['handleOpenURL'] = (url: string) => handleTokenOrUrl(url, 'external');
+  window['handleOpenURL'] = (url: string) => {
+    if (url?.startsWith(URL_SCHEME + '://')) {
+      handleTokenOrUrl(url, 'external');
+    } else {
+      logDebug(`handleOpenURL: Ignoring ${url} - does not start with ${URL_SCHEME}://`);
+    }
+  };
 
   useEffect(() => {
     if (!appConfig) return;
@@ -79,21 +109,6 @@ const App = () => {
         displayErrorMsg(e, 'Error while registering and updating profile');
       });
   }, [appConfig, onboardingState?.route]);
-
-  const appState = useAppState({});
-  if (appState != 'active') {
-    // Render nothing if the app state is not 'active'.
-    // On iOS, the UI can run if the app is launched by the OS in response to a notification,
-    // in which case the appState will be 'background'. In this case, we definitely do not want
-    // to load the UI because it is not visible.
-    // On Android, the UI can only be initiated by the user - but even so, the user can send it to
-    // the background and we don't need the UI to stay active.
-    // In the future, we may want to persist some UI states when the app is sent to the background;
-    // i.e. the user opens the app, navigates away, and back again.
-    // But currently, we're relying on a 'fresh' UI every time the app goes to 'active' state.
-    logDebug(`App: appState = ${appState}; returning null`);
-    return null;
-  }
 
   const appContextValue = {
     appConfig,
@@ -123,18 +138,19 @@ const App = () => {
   }
 
   return (
-    <>
-      <AppContext.Provider value={appContextValue}>
-        {appContent}
-
-        {/* If we are fully consented, (route > PROTOCOL), the permissions popup can show if needed.
+    <PaperProvider theme={theme}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.elevation.level2 }}>
+        <AppContext.Provider value={appContextValue}>
+          {appContent}
+          {/* If we are fully consented, (route > PROTOCOL), the permissions popup can show if needed.
           This also includes if onboarding is DONE altogether (because "DONE" is > "PROTOCOL") */}
-        {onboardingState && onboardingState.route > OnboardingRoute.PROTOCOL && (
-          <AppStatusModal permitVis={permissionsPopupVis} setPermitVis={setPermissionsPopupVis} />
-        )}
-      </AppContext.Provider>
-      <AlertBar />
-    </>
+          {onboardingState && onboardingState.route > OnboardingRoute.PROTOCOL && (
+            <AppStatusModal />
+          )}
+          <AlertArea />
+        </AppContext.Provider>
+      </SafeAreaView>
+    </PaperProvider>
   );
 };
 

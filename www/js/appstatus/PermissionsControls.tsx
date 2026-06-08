@@ -4,12 +4,10 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import PermissionItem from './PermissionItem';
-import { refreshAllChecks } from '../usePermissionStatus';
 import ExplainPermissions from './ExplainPermissions';
-import { AlertManager } from '../components/AlertBar';
 import { AppContext } from '../App';
 
-const PermissionsControls = ({ onAccept }) => {
+const PermissionsControls = ({ onAccept, refreshAllChecks }) => {
   const { t } = useTranslation();
   const [explainVis, setExplainVis] = useState<boolean>(false);
   const { permissionStatus } = useContext(AppContext);
@@ -26,8 +24,16 @@ const PermissionsControls = ({ onAccept }) => {
         <ExplainPermissions
           explanationList={explanationList}
           visible={explainVis}
-          setVisible={setExplainVis}></ExplainPermissions>
-        {checkList?.map((lc) => <PermissionItem key={lc.name} check={lc}></PermissionItem>)}
+          setVisible={setExplainVis}
+        />
+        {checkList?.map((lc) => (
+          <PermissionItem
+            key={lc.name}
+            check={lc}
+            checkList={checkList}
+            refreshAllChecks={refreshAllChecks}
+          />
+        ))}
       </ScrollView>
       <View style={styles.buttonBox}>
         <Button onPress={() => refreshAllChecks(checkList)}>{t('intro.appstatus.refresh')}</Button>

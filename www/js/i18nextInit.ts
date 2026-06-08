@@ -37,8 +37,10 @@ function mergeInTranslations(lang, fallbackLang) {
 }
 
 import enJson from '../i18n/en.json';
+import esJson from '../../locales/es/i18n/es.json';
 const langs = {
   en: { translation: enJson },
+  es: { translation: mergeInTranslations(esJson, enJson) },
 };
 
 const locales = navigator?.languages?.length ? navigator.languages : [navigator.language];
@@ -61,10 +63,11 @@ i18next.use(initReactI18next).init({
 export default i18next;
 
 // Next, register the translations for react-native-paper-dates
-import { en, es, fr, it, registerTranslation } from 'react-native-paper-dates';
+import { en, es, registerTranslation } from 'react-native-paper-dates';
 import { logWarn } from './plugin/logger';
 const rnpDatesLangs = {
   en,
+  es,
 };
 for (const lang of Object.keys(rnpDatesLangs)) {
   registerTranslation(lang, rnpDatesLangs[lang]);
