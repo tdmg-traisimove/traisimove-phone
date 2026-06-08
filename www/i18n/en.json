@@ -5,6 +5,13 @@
   "weekdays-all": "All",
   "weekdays-select": "Select day of the week",
 
+  "general": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No"
+  },
+
   "trip-confirm": {
     "services-please-fill-in": "Please fill in the {{text}} not listed.",
     "services-cancel": "Cancel",
@@ -16,40 +23,39 @@
 
   "control": {
     "profile-tab": "Profile",
-    "edit-demographics": "Edit Registration & Contact",
+    "edit-demographics": "Edit Demographics",
     "tracking": "Tracking",
     "app-status": "App Status",
     "incorrect-app-status": "Please update permissions",
     "fix-app-status": "Click to view and fix app status",
     "fix": "Fix",
-    "medium-accuracy": "Medium Accuracy",
-    "force-sync": "Force Sync",
+    "medium-accuracy": "Medium accuracy",
+    "force-sync": "Force sync",
     "share": "Share",
-    "download-json-dump": "Download Json Dump",
-    "share-log": "Share Log",
+    "download-json-dump": "Download json dump",
+    "share-log": "Share log",
     "upload-log": "Upload log",
     "view-privacy": "View Privacy Policy",
     "user-data": "User data",
     "erase-data": "Erase data",
-    "dev-zone": "Developer Zone",
-    "bluetooth-scan": "Scan For Bluetooth",
+    "dev-zone": "Developer zone",
+    "bluetooth-scan": "Scan for Bluetooth",
     "refresh": "Refresh",
-    "end-trip-sync": "End Trip + Sync",
-    "check-consent": "Check Consent",
-    "invalidate-cached-docs": "Invalidate Cached Docs",
-    "nuke-all": "Nuke All Buffers and Cache",
+    "end-trip-sync": "End trip + sync",
+    "check-consent": "Check consent",
+    "invalidate-cached-docs": "Invalidate cached docs",
+    "nuke-all": "Nuke all buffers and cache",
     "test-notification": "Test local notification",
-    "check-log": "Check Log",
+    "check-log": "Check log",
     "log-title": "Log",
-    "check-sensed-data": "Check Sensed Data",
+    "check-sensed-data": "Check sensed data",
     "sensed-title": "Sensed Data: Transitions",
     "edit-tracking-config": "Edit Tracking Config",
     "edit-sync-config": "Edit Sync Config",
     "button-accept": "I accept",
-    "continue": "Continue",
     "view-qrc": "My OPcode",
     "app-version": "App Version",
-    "reminders-time-of-day": "Time of Day for Reminders ({{time}})",
+    "reminders-time-of-day": "Time of Day for Reminders",
     "upcoming-notifications": "Upcoming Notifications",
     "dummy-notification": "Dummy Notification in 5 Seconds",
     "log-out": "Log Out",
@@ -57,7 +63,21 @@
     "current-version": "Current version: {{version}}",
     "refreshing-app-config": "Refreshing app configuration, please wait...",
     "already-up-to-date": "Already up to date!",
-    "manage-custom-labels": "Manage Custom Labels"
+    "manage-custom-labels": "Manage Custom Labels",
+    "give-feedback": "Give feedback",
+    "feedback-modal": {
+      "experience-question": "How has your experience with TRAISI Move been so far?",
+      "leave-review-ios": "Would you like to leave a review on the App Store? This helps us support more projects like \"{{deploymentPartnerName}}\" and improve the app!",
+      "leave-review-android": "Would you like to leave a review on the Play Store? This helps us support more projects like \"{{deploymentPartnerName}}\" and improve the app!",
+      "leave-feedback": "We'd love to know how we can improve. Would you like to send us feedback or report an issue by email?",
+      "feedback-for-devs": "I have feedback about the app for the TRAISI Move team at TDMG",
+      "feedback-for-admin": "I have feedback about the study for TDMG",
+      "sure": "Sure!",
+      "compose-email": "Compose email",
+      "no-thanks": "No thanks",
+      "feedback-email-subject": "TRAISI Move Feedback [{{deploymentId}}]",
+      "feedback-email-body": "TRAISI Move team,\n\n[Describe your feedback or issue here. Thank you for helping us improve TRAISI Move!]\n\nDiagnostic info:\n{{diagnosticInfo}}\n"
+    }
   },
 
   "general-settings": {
@@ -74,7 +94,7 @@
     "confirm": "Confirm",
     "user-data-erased": "User data erased.",
     "consent-not-found": "Consent for data collection not found, consent now?",
-    "no-consent-logout": "Consent for data collection not found, please save your opcode, log out, and log back in with the same opcode. Note that you won't get any personalized stats until you do!",
+    "no-consent-logout": "Consent for data collection not found, please save your OPcode, log out, and log back in with the same OPcode. Note that you won't get any personalized stats until you do!",
     "no-consent-message": "OK! Note that you won't get any personalized stats until you do!",
     "consent-found": "Consent found!",
     "consented-to": "Consented to protocol last updated on {{approval_date}}",
@@ -94,7 +114,7 @@
       "energy-usage": "Energy Usage",
       "us-2030-goal": "2030 Guideline",
       "us-2050-goal": "2050 Guideline",
-      "us-goals-footnote": "Guidelines are based on US decarbonization goals, scaled to per-capita travel-related footprint.",
+      "us-goals-footnote": "Guidelines are based on Canadian decarbonization goals, scaled to per-capita travel-related footprint.",
       "labeled": "Labeled",
       "unlabeled": "Unlabeled",
       "uncertainty-footnote": "Due to the uncertainty of unlabeled trips, estimates may fall anywhere within the shown range. Label more trips for richer estimates.",
@@ -261,7 +281,7 @@
   },
 
   "shareFile-service": {
-    "send-to": "Please send this file to openpath@nrel.gov, or another OpenPATH team member.",
+    "send-to": "Please send this file to traisi.move.civmin@utoronto.ca, or another TRAISI Move team member.",
     "send-log": {
       "subject-logs": "emission logs",
       "body-please-fill-in-what-is-wrong": "please fill in what is wrong"
@@ -398,7 +418,7 @@
     "paste-hint": "Or, paste the code as text",
     "more-info": "More Info",
     "about-app-title": "About {{appName}}",
-    "about-app-para-1": "The National Renewable Energy Laboratory’s Open Platform for Agile Trip Heuristics (NREL OpenPATH) enables people to track their travel modes—car, bus, bike, walking, etc.—and measure their associated energy use and carbon footprint.",
+    "about-app-para-1": "TRAISI Move enables people to track their travel modes—car, bus, bike, walking, etc.—and measure their associated energy use and carbon footprint.",
     "about-app-para-2": "The app empowers communities to understand their travel mode choices and patterns, experiment with options to make them more sustainable, and evaluate the results. Such results can inform effective transportation policy and planning and be used to build more sustainable and accessible cities.",
     "about-app-para-3": "It does so by building an automatic diary of all your trips, across all transportation modes. It reads multiple sensors, including location, in the background, and turns GPS tracking on and off automatically for minimal power consumption. The choice of the travel pattern information and the carbon footprint display style are study-specific.",
     "tips-title": "Tip(s) for correct operation:",
@@ -413,7 +433,7 @@
     "unable-read-saved-config": "Unable to read saved config",
     "unable-to-store-config": "Unable to store downladed config",
     "not-enough-parts-old-style": "OPcode {{token}} does not have at least two '_' characters",
-    "no-tdmgop-start": "OPcode {{token}} does not start with 'tdmgop'",
+    "no-nrelop-start": "OPcode {{token}} does not start with 'tdmgop'",
     "not-enough-parts": "OPcode {{token}} does not have at least three '_' characters",
     "invalid-subgroup": "Invalid OPcode {{token}}, subgroup {{subgroup}} not found in list {{config_subgroups}}",
     "invalid-subgroup-no-default": "Invalid OPcode {{token}}, no subgroups, expected 'default' subgroup",
@@ -439,11 +459,11 @@
     "while-scanning-bluetooth": "While scanning for Bluetooth Devices: "
   },
   "consent-text": {
-    "title": "NREL OPENPATH PRIVACY POLICY/TERMS OF USE",
+    "title": "TRAISI MOVE PRIVACY POLICY/TERMS OF USE",
     "introduction": {
       "header": "Introduction and Purpose",
-      "what-is-openpath": "This data is being collected through OpenPATH, an NREL open-sourced platform. The smart phone application, NREL OpenPATH (“App”), combines data from smartphone sensors, semantic user labels and a short demographic survey.",
-      "what-is-NREL": "NREL is a national laboratory of the U.S. Department of Energy, Office of Energy Efficiency and Renewable Energy, operated by Alliance for Sustainable Energy, LLC under Prime Contract No. DE-AC36-08GO28308. This Privacy Policy applies to the App provided by Alliance for Sustainable Energy, LLC. This App is provided solely for the purposes of collecting travel behavior data for the {{program_or_study}} and for research to inform public policy. None of the data collected by the App will never be sold or used for any commercial purposes, including advertising.",
+      "what-is-openpath": "This data is being collected through TRAISI Move, an open-sourced platform. The smart phone application, TRAISI Move (“App”), combines data from smartphone sensors, semantic user labels and a short demographic survey.",
+      "what-is-lab": "The Travel Demand Modelling Group (TDMG) at the University of Toronto is led by Professor Khandker Nurul Habib. The TDMG's research focus is on sustainable transportation planning and policy development. This Privacy Policy applies to the App provided by TDMG. This App is provided solely for the purposes of collecting travel behavior data for the {{program_or_study}} and for research to inform public policy. None of the data collected by the App will be sold or used for any commercial purposes, including advertising.",
       "if-disagree": "IF YOU DO NOT AGREE WITH THE TERMS OF THIS PRIVACY POLICY, PLEASE DELETE THE APP"
     },
     "why": {
@@ -455,40 +475,38 @@
       "phone-sensor": "It collects phone sensor data pertaining to your location (including background location), accelerometer, device-generated activity and mode recognition, App usage time, and battery usage. The App will create a “travel diary” based on your background location data to determine your travel patterns and location history.",
       "labeling": "It will also ask you to periodically annotate these sensed trips with semantic labels, such as the trip mode, purpose, and replaced mode.",
       "demographics": "It will also request sociodemographic information such as your approximate age, gender, and household type. The sociodemographic factors can be used to understand the influence of lifestyle on travel behavior, as well as generalize the results to a broader population.",
-      "open-source-data": "For the greatest transparency, the App is based on an open source platform, NREL’s OpenPATH. you can inspect the data that OpenPATH collects in the background at",
+      "open-source-data": "For the greatest transparency, the App is based on an open source platform, NLR's OpenPATH. you can inspect the data that OpenPATH collects in the background at",
       "open-source-analysis": "the analysis pipeline at",
-      "open-source-dashboard": "and the dashboard metrics at",
-      "on-nrel-site": "For the greatest transparency, the App is based on an open source platform, NREL’s OpenPATH. you can inspect the data that OpenPATH collects in the background, the analysis pipeline, and the dashboard metrics through links on the NREL OpenPATH website."
+      "open-source-dashboard": "and the dashboard metrics at"
     },
     "opcode": {
       "header": "How we associate information with you",
-      "not-autogen": "Program administrators will provide you with a 'opcode' that you will use to log in to the system. This long random string will be used for all further communication with the server. If you forget or lose your opcode, you may request it by providing your name and/or email address to the program administrator. Please do not contact NREL staff with opcode retrieval requests since we do not have access to the connection between your name/email and your opcode. The data that NREL automatically collects (phone sensor data, semidemographic data, etc.) will only be associated with your 'opcode'",
-      "autogen": "You are logging in with a randomly generated 'opcode' that has been generated by the platform. This long random string will used for all further communication with the server. Only you know the opcode that is associated with you. There is no “Forgot password” option, and NREL staff cannot retrieve your opcode, even if you provide your name or email address. This means that, unless you store your opcode in a safe place, you will not have access to your prior data if you switch phones or uninstall and reinstall the App."
+      "not-autogen": "Program administrators will provide you with a 'OPcode' that you will use to log in to the system. This long random string will be used for all further communication with the server. If you forget or lose your OPcode, you may request it by providing your name and/or email address to the program administrator. The data that TRAISI Move automatically collects (phone sensor data, semidemographic data, etc.) will only be associated with your 'OPcode.'",
+      "autogen": "You are logging in with a randomly generated 'OPcode' that has been generated by the platform. This long random string will used for all further communication with the server. Only you know the OPcode that is associated with you. There is no “Forgot password” option, and TRAISI staff cannot retrieve your OPcode, even if you provide your name or email address. This means that, unless you store your OPcode in a safe place, you will not have access to your prior data if you switch phones or uninstall and reinstall the App."
     },
     "who-sees": {
       "header": "Who gets to see the information",
       "public-dash": "Aggregate metrics derived from the travel patterns will be made available on a public dashboard to provide transparency into the impact of the program. These metrics will focus on information summaries such as counts, distances and durations, and will not display individual travel locations or times.",
       "individual-info": "Individual labeling rates and trip level information will only be made available to:",
       "program-admins": "Program administrators from {{deployment_partner_name}} to {{raw_data_use}}, and",
-      "nrel-devs": "NREL OpenPATH developers for debugging",
-      "TSDC-info": "The data will also be periodically archived in NREL’s Transportation Secure Data Center (TSDC) after a delay of 3 to 6 months. It will then be made available for legitimate research through existing, privacy-preserving TSDC operating procedures. Further information on the procedures is available",
+      "developers": "TRAISI Move developers for debugging",
+      "TSDC-info": "The data will also be archived in the TDMG Secure Data Server. It will not be accessible outside of the TDMG research group at the University of Toronto.",
       "on-website": " on the website ",
       "and-in": "and in",
       "this-pub": " this publication ",
       "and": "and",
-      "fact-sheet": " fact sheet",
-      "on-nrel-site": " through links on the NREL OpenPATH website."
+      "fact-sheet": " fact sheet"
     },
     "rights": {
       "header": "Your rights",
-      "app-required": "You are required to track your travel patterns using the App as a condition of participation in the Program. If you wish to withdraw from the Program, you should contact the program administrator, {{program_admin_contact}}  to discuss termination options. If you  wish to stay in the program but not use the app, please contact your program administrator to negotiate an alternative data collection procedure before uninstalling the app. If you uninstall the app without approval from the program administrator, you may not have access to the benefits provided by the program.",
-      "app-not-required": "Participation in the {{program_or_study}} is completely voluntary. You have the right to decline to participate or to withdraw at any point in the Study without providing notice to NREL or the point of contact. If you do not wish to participate in the Study or to discontinue your participation in the Study, please delete the App.",
-      "destroy-data-pt1": "If you would like to have your data destroyed, please contact K. Shankari ",
+      "app-required": "You are required to track your travel patterns using the App as a condition of participation in the Program. If you wish to withdraw from the Program, you should contact the program administrator, {{program_admin_contact}} to discuss termination options. If you  wish to stay in the program but not use the app, please contact your program administrator to negotiate an alternative data collection procedure before uninstalling the app. If you uninstall the app without approval from the program administrator, you may not have access to the benefits provided by the program.",
+      "app-not-required": "Participation in the {{program_or_study}} is completely voluntary. You have the right to decline to participate or to withdraw at any point in the Study without providing notice to NLR or the point of contact. If you do not wish to participate in the Study or to discontinue your participation in the Study, please delete the App.",
+      "destroy-data-pt1": "If you would like to have your data destroyed, please contact the TRAISI Move team (traisi.move.civmin@utoronto.ca)",
       "destroy-data-pt2": " requesting deletion. You must include your token in the request for deletion. Because we do not connect your identity with your token, we cannot delete your information without obtaining the token as part of the deletion request. We will then destroy all data associated with that deletion request, both in the online and archived datasets."
     },
     "questions": {
       "header": "Questions",
-      "for-questions": "If you have any questions about the data collection goals and results, please contact the primary point of contact for the study, {{program_admin_contact}}. If you have any technical questions about app operation, please contact NREL’s K. Shankari (k.shankari@nrel.gov)."
+      "for-questions": "If you have any questions about the data collection goals and results, please contact the primary point of contact for the study, {{program_admin_contact}}. If you have any technical questions about app operation, please contact the TRAISI Move team (traisi.move.civmin@utoronto.ca)."
     },
     "consent": {
       "header": "Consent",
