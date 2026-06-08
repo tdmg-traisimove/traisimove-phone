@@ -117,7 +117,7 @@ const PrivacyPolicy = () => {
         <Text
           style={styles.hyperlinkStyle(colors.primary)}
           onPress={() =>
-            launchUrl('https://www.nlr.gov/transportation/secure-transportation-data/')
+            launchUrl('https://move.traisi.ca/home/')
           }>
           {t('consent-text.who-sees.on-website')}
         </Text>
@@ -125,14 +125,14 @@ const PrivacyPolicy = () => {
         <Text
           style={styles.hyperlinkStyle(colors.primary)}
           onPress={() =>
-            launchUrl('https://www.sciencedirect.com/science/article/pii/S2352146515002999')
+            launchUrl('https://move.traisi.ca/research-action/')
           }>
           {t('consent-text.who-sees.this-pub')}
         </Text>
         {t('consent-text.who-sees.and')}
         <Text
           style={styles.hyperlinkStyle(colors.primary)}
-          onPress={() => launchUrl('https://docs.nlr.gov/docs/fy19osti/73086.pdf')}>
+          onPress={() => launchUrl('https://move.traisi.ca/privacy-policy/')}>
           {t('consent-text.who-sees.fact-sheet') + '.'}
         </Text>
       </Text>
