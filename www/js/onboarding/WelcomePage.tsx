@@ -166,7 +166,7 @@ const WelcomePage = () => {
                 Please ensure that all status checks remain enabled throughout the data collection period. For any questions, please contact the Principal Investigator (PI) at the TDMG via email at:
                 {" "}
                 <Text style={{ color: colors.primary}} >
-                    khandker.nurulhabib@utoronto.ca
+                    traisi.move.civmin@utoronto.ca
                 </Text>
                 .
               </Text>
