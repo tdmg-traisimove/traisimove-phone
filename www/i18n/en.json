@@ -490,10 +490,10 @@
       "individual-info": "Individual labeling rates and trip level information will only be made available to:",
       "program-admins": "Program administrators from {{deployment_partner_name}} to {{raw_data_use}}, and",
       "developers": "TRAISI Move developers for debugging",
-      "TSDC-info": "The data will also be archived in the TDMG Secure Data Server. It will not be accessible outside of the TDMG research group at the University of Toronto.",
+      "TSDC-info": "The data will also be archived in the TDMG Secure Data Server. It will not be accessible outside of the TDMG research group at the University of Toronto. Further information is available",
       "on-website": " on the website ",
       "and-in": "and in",
-      "this-pub": " this publication ",
+      "this-pub": " these publications ",
       "and": "and",
       "fact-sheet": " fact sheet"
     },
