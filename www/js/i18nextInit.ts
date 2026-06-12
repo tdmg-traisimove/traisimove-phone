@@ -39,10 +39,20 @@ function mergeInTranslations(lang, fallbackLang) {
 import enJson from '../i18n/en.json';
 import esJson from '../../locales/es/i18n/es.json';
 import frJson from '../../locales/fr/i18n/fr.json';
+import hiJson from '../../locales/hi/i18n/hi.json';
+import koJson from '../../locales/ko/i18n/ko.json';
+import paJson from '../../locales/pa/i18n/pa.json';
+import zh_HansJson from '../../locales/zh-Hans/i18n/zh-Hans.json';
+import zh_HantJson from '../../locales/zh-Hant/i18n/zh-Hant.json';
 const langs = {
   en: { translation: enJson },
   es: { translation: mergeInTranslations(esJson, enJson) },
   fr: { translation: mergeInTranslations(frJson, enJson) },
+  hi: { translation: mergeInTranslations(hiJson, enJson) },
+  ko: { translation: mergeInTranslations(koJson, enJson) },
+  pa: { translation: mergeInTranslations(paJson, enJson) },
+  zh_Hans: { translation: mergeInTranslations(zh_HansJson, enJson) },
+  zh_Hant: { translation: mergeInTranslations(zh_HantJson, enJson) },
 };
 
 const locales = navigator?.languages?.length ? navigator.languages : [navigator.language];
@@ -65,12 +75,17 @@ i18next.use(initReactI18next).init({
 export default i18next;
 
 // Next, register the translations for react-native-paper-dates
-import { en, es, fr, registerTranslation } from 'react-native-paper-dates';
+import { en, es, fr, hi, ko, pa, zh_Hans, zh_Hant, registerTranslation } from 'react-native-paper-dates';
 import { logWarn } from './plugin/logger';
 const rnpDatesLangs = {
   en,
   es,
   fr,
+  hi,
+  ko,
+  pa,
+  zh_Hans,
+  zh_Hant,
 };
 for (const lang of Object.keys(rnpDatesLangs)) {
   registerTranslation(lang, rnpDatesLangs[lang]);
