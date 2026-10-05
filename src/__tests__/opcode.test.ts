@@ -1,0 +1,100 @@
+//  * @example getTokenFromUrl('https://open-access-openpath.nrel.gov/join/') => tdmgop_open-access_default_randomLongStringWith32Characters
+//  * @example getTokenFromUrl('traisimove://login_token?token=tdmgop_study_subgroup_random') => tdmgop_study_subgroup_random
+//  * @example getTokenFromUrl('nrelopenpath://login_token?token=tdmgop_study_subgroup_random') => tdmgop_study_subgroup_random
+
+import {
+  getStudyNameFromToken,
+  getSubgroupFromToken,
+  getTokenFromUrl,
+  isJoinUrl,
+} from '../js/config/opcode';
+import { DeploymentConfig } from 'op-deployment-configs';
+describe('opcode', () => {
+  describe('getStudyNameFromToken', () => {
+    const token = 'tdmgop_great-study_default_randomLongStringWith32Characters';
+    it('returns the study name from a token', () => {
+      expect(getStudyNameFromToken(token)).toBe('great-study');
+    });
+  });
+
+  describe('getSubgroupFromToken', () => {
+    const amazingSubgroupToken = 'tdmgop_great-study_amazing-subgroup_000';
+    it('returns the subgroup from a token with valid subgroup', () => {
+      const fakeconfig = {
+        opcode: {
+          subgroups: ['amazing-subgroup', 'other-subgroup'],
+        },
+      } as any as DeploymentConfig;
+      expect(getSubgroupFromToken(amazingSubgroupToken, fakeconfig)).toBe('amazing-subgroup');
+    });
+
+    it("throws error if token's subgroup is not in config", () => {
+      const fakeconfig = {
+        opcode: {
+          subgroups: ['sad-subgroup', 'other-subgroup'],
+        },
+      } as any as DeploymentConfig;
+      expect(() => getSubgroupFromToken(amazingSubgroupToken, fakeconfig)).toThrow();
+    });
+
+    it("returns 'default' if token has 'default' and config is not configured with subgroups", () => {
+      const defaultSubgroupToken = 'tdmgop_great-study_default_000';
+      const fakeconfig = {
+        opcode: {},
+      } as any as DeploymentConfig;
+      expect(getSubgroupFromToken(defaultSubgroupToken, fakeconfig)).toBe('default');
+    });
+
+    it("throws error if token's subgroup is not 'default' and config is not configured with subgroups", () => {
+      const invalidSubgroupToken = 'tdmgop_great-study_imaginary-subgroup_000';
+      const fakeconfig = {
+        opcode: {},
+      } as any as DeploymentConfig;
+      expect(() => getSubgroupFromToken(invalidSubgroupToken, fakeconfig)).toThrow();
+    });
+  });
+
+  describe('getTokenFromUrl', () => {
+    it('generates a token for an nrel.gov join page URL', () => {
+      const url = 'https://open-access-openpath.nrel.gov/join/';
+      expect(getTokenFromUrl(url)).toMatch(/^tdmgop_open-access_default_[a-zA-Z0-9]{32}$/);
+    });
+
+    it('generates a token for an nrel.gov join page URL with a sub_group parameter', () => {
+      const url = 'https://open-access-openpath.nrel.gov/join/?sub_group=foo';
+      expect(getTokenFromUrl(url)).toMatch(/^tdmgop_open-access_foo_[a-zA-Z0-9]{32}$/);
+    });
+
+    it('generates a token for an traisimove://join URL', () => {
+      const url = 'traisimove://join?study_config=great-study';
+      expect(getTokenFromUrl(url)).toMatch(/^tdmgop_great-study_default_[a-zA-Z0-9]{32}$/);
+    });
+
+    it('extracts the token from a nrelopenpath://login_token URL', () => {
+      const url = 'nrelopenpath://login_token?token=tdmgop_study_subgroup_random';
+      expect(getTokenFromUrl(url)).toBe('tdmgop_study_subgroup_random');
+    });
+
+    it('throws error for any URL with a path other than "join" or "login_token"', () => {
+      expect(() => getTokenFromUrl('https://open-access-openpath.nrel.gov/invalid/')).toThrow();
+      expect(() => getTokenFromUrl('nrelopenpath://jion?study_config=open-access')).toThrow();
+      expect(() =>
+        getTokenFromUrl('traisimove://togin_loken?token=tdmgop_open-access_000'),
+      ).toThrow();
+    });
+  });
+
+  describe('isJoinUrl', () => {
+    it('recognizes join and login_token URLs', () => {
+      expect(isJoinUrl('emission://join?study_config=great-study')).toBe(true);
+      expect(isJoinUrl('nrelopenpath://login_token?token=nrelop_study_default_user')).toBe(true);
+      expect(isJoinUrl('https://open-access-openpath.nrel.gov/join/')).toBe(true);
+    });
+
+    it('rejects non-join app URLs and malformed input', () => {
+      expect(isJoinUrl('emission://payment/setup/refresh')).toBe(false);
+      expect(isJoinUrl('emission://library/vehicle')).toBe(false);
+      expect(isJoinUrl('not a URL')).toBe(false);
+    });
+  });
+});

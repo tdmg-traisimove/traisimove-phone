@@ -1,8 +1,10 @@
 echo "Ensure we exit on error"
 set -e
 
-source setup/setup_shared.sh
+source setup/setup_dependencies.sh
 
+echo "Clearing platforms/ and plugins/ directories"
+rm -rf platforms/ plugins/
 
 # The Homebrew pac-man is installed in different locations, depending on whether the processor
 # is an Intel or Apple Silicone chip.  Intel uses x86_64, Apple chips are amd64, so we can
@@ -98,9 +100,6 @@ if [[ ! -f "$FCM_IOS_FILE" ]]; then
   exit 1
 fi
 
-echo "Setting up all npm packages"
-npm install
-
 # By default, node doesn't fail if any of the steps fail. This makes it hard to
 # use in a CI environment, and leads to people reporting the node error rather
 # than the underlying error. One solution is to pass in a command line argument to node
@@ -112,9 +111,12 @@ npm install
 echo "hack to make the local cordova fail on error"
 sed -i -e "s|/usr/bin/env node|/usr/bin/env node --unhandled-rejections=strict|" node_modules/cordova/bin/cordova
 
+# Ensure www/ exists (if it doesn't, cordova prepare will fail)
+mkdir -p www/
+
 npx cordova prepare$PLATFORMS
 
-EXPECTED_COUNT=27
+EXPECTED_COUNT=25
 INSTALLED_COUNT=`npx cordova plugin list | wc -l`
 echo "Found $INSTALLED_COUNT plugins, expected $EXPECTED_COUNT"
 if [ $INSTALLED_COUNT -lt $EXPECTED_COUNT ];
