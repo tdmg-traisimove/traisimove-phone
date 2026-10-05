@@ -45,19 +45,26 @@ import koJson from '../../locales/ko/i18n/ko.json';
 import paJson from '../../locales/pa/i18n/pa.json';
 import zh_HansJson from '../../locales/zh-Hans/i18n/zh-Hans.json';
 import zh_HantJson from '../../locales/zh-Hant/i18n/zh-Hant.json';
-const langs = {
-  en: { translation: enJson },
-  es: { translation: mergeInTranslations(esJson, enJson) },
-  fr: { translation: mergeInTranslations(frJson, enJson) },
-  hi: { translation: mergeInTranslations(hiJson, enJson) },
-  ko: { translation: mergeInTranslations(koJson, enJson) },
-  pa: { translation: mergeInTranslations(paJson, enJson) },
-  zh_Hans: { translation: mergeInTranslations(zh_HansJson, enJson) },
-  zh_Hant: { translation: mergeInTranslations(zh_HantJson, enJson) },
+const baseTranslations: { [lang: string]: TranslationTree } = {
+  en: enJson as TranslationTree,
+  es: mergeInTranslations(esJson, enJson) as TranslationTree,
+  fr: mergeInTranslations(frJson, enJson) as TranslationTree,
+  hi: mergeInTranslations(hiJson, enJson) as TranslationTree,
+  ko: mergeInTranslations(koJson, enJson) as TranslationTree,
+  pa: mergeInTranslations(paJson, enJson) as TranslationTree,
+  zh_Hans: mergeInTranslations(zh_HansJson, enJson) as TranslationTree,
+  zh_Hant: mergeInTranslations(zh_HantJson, enJson) as TranslationTree,
 };
+
 const langs = {
   en: { translation: baseTranslations.en },
   es: { translation: baseTranslations.es },
+  fr: { translation: baseTranslations.fr },
+  hi: { translation: baseTranslations.hi },
+  ko: { translation: baseTranslations.ko },
+  pa: { translation: baseTranslations.pa },
+  zh_Hans: { translation: baseTranslations.zh_Hans },
+  zh_Hant: { translation: baseTranslations.zh_Hant },
 };
 
 /* warns about override keys that don't exist in the built-in translations, which are
