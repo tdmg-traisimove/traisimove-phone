@@ -38,23 +38,72 @@ function getIosResourcesFolder(projectRoot) {
 }
 
 function syncAndroid(projectRoot, localesFolder, languageFolders) {
-    var platformRes = path.join(projectRoot, 'platforms/android/app/src/main/res');
+    var platformRes = path.join(
+        projectRoot,
+        'platforms/android/app/src/main/res'
+    );
 
     if (!fs.existsSync(platformRes)) {
-        console.log(LOG_NAME + 'android platform resources not found, skipping android sync.');
+        console.log(
+            LOG_NAME +
+            'android platform resources not found, skipping android sync.'
+        );
         return;
     }
 
+    // i18n/BCP-47 locale names are not always valid Android
+    // resource directory qualifiers.
+    const androidLocaleQualifiers = {
+        'zh-Hans': 'b+zh+Hans',
+        'zh-Hant': 'b+zh+Hant',
+    };
+
     languageFolders.forEach(function (language) {
-        var sourceValuesFolder = path.join(localesFolder, language, 'values-' + language);
+
+        const androidQualifier =
+            androidLocaleQualifiers[language] || language;
+
+        /*
+         * Keep supporting the translation repository's current structure:
+         *
+         * locales/zh-Hant/values-zh-Hant/
+         * locales/zh-Hans/values-zh-Hans/
+         */
+        var sourceValuesFolder = path.join(
+            localesFolder,
+            language,
+            'values-' + language
+        );
+
         if (!fs.existsSync(sourceValuesFolder)) {
             return;
         }
 
-        var targetValuesFolder = path.join(platformRes, 'values-' + language);
+        /*
+         * Android destination:
+         *
+         * zh-Hant -> values-b+zh+Hant
+         * zh-Hans -> values-b+zh+Hans
+         * fr      -> values-fr
+         * hi      -> values-hi
+         * etc.
+         */
+        var targetValuesFolder = path.join(
+            platformRes,
+            'values-' + androidQualifier
+        );
+
         fs.mkdirSync(targetValuesFolder, { recursive: true });
         fs.copySync(sourceValuesFolder, targetValuesFolder);
-        console.log(LOG_NAME + 'android ' + language + ' copied.');
+
+        console.log(
+            LOG_NAME +
+            'android ' +
+            language +
+            ' -> values-' +
+            androidQualifier +
+            ' copied.'
+        );
     });
 }
 
